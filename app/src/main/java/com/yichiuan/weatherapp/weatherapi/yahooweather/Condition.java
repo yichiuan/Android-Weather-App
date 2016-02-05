@@ -2,12 +2,12 @@ package com.yichiuan.weatherapp.weatherapi.yahooweather;
 
 
 public class Condition {
-    private int code;
+    private short code;
     private String date;
-    private int temp;
+    private short temp;
     private String text;
 
-    public int getCode() {
+    public short getCode() {
         return code;
     }
 
@@ -15,7 +15,7 @@ public class Condition {
         return date;
     }
 
-    public int getTemp() {
+    public short getTemp() {
         return temp;
     }
 
