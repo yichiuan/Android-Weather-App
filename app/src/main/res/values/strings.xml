@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeatherApp</string>
+    <string name="open_location">Please open location</string>
+    <string name="open">Open</string>
 </resources>
