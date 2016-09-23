@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -18,26 +19,32 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
 import com.yichiuan.weatherapp.event.ErrorResponseEvent;
 import com.yichiuan.weatherapp.event.PermissionEvent;
 import com.yichiuan.weatherapp.event.WeatherInfoEvent;
 import com.yichiuan.weatherapp.weatherapi.WeatherService;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class ContentFragment extends Fragment {
 
     private static final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
 
-    private View constraintLayout;
-    private TextView temperatureView;
+    @BindView(R.id.temperature_view)
+    TextView temperatureView;
+    @BindView(R.id.constraint_layout)
+    ConstraintLayout constraintLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_frag, container, false);
-        constraintLayout = view.findViewById(R.id.constraint_layout);
+        ButterKnife.bind(this, view);
+        constraintLayout = (ConstraintLayout) view.findViewById(R.id.constraint_layout);
         temperatureView = (TextView) view.findViewById(R.id.temperature_view);
         return view;
     }
