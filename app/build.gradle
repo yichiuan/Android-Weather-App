@@ -21,7 +21,7 @@ android {
 }
 
 dexcount {
-    format = "yaml"
+    format = "tree"
 }
 
 dependencies {
@@ -37,4 +37,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
 }
