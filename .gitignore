@@ -46,3 +46,5 @@ captures/
 
 # Windows thumbnail db
 Thumbs.db
+
+keystore.properties

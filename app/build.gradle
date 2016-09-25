@@ -13,6 +13,9 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        releaseConfig
+    }
     buildTypes {
         debug {
             minifyEnabled true
@@ -31,8 +34,28 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
         }
     }
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+def keystoreProperties = new Properties()
+
+if (keystorePropertiesFile.canRead()) {
+    // Load your keystore.properties file into the keystoreProperties object.
+    // keystore.properties contains
+    //    storeFile=locationOfstoreFile
+    //    storePassword=storePassword
+    //    keyPassword=keyPassword
+    //    keyAlias=keyAlias
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+    android.signingConfigs.releaseConfig.storeFile file(keystoreProperties['storeFile'])
+    android.signingConfigs.releaseConfig.storePassword keystoreProperties['storePassword']
+    android.signingConfigs.releaseConfig.keyAlias keystoreProperties['keyAlias']
+    android.signingConfigs.releaseConfig.keyPassword keystoreProperties['keyPassword']
 }
 
 apt {
