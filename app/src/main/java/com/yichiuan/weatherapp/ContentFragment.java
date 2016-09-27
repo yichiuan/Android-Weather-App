@@ -1,7 +1,5 @@
 package com.yichiuan.weatherapp;
 
-import java.util.List;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -27,6 +25,8 @@ import com.yichiuan.weatherapp.weatherapi.WeatherService;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,13 +39,13 @@ public class ContentFragment extends Fragment {
     TextView temperatureView;
     @BindView(R.id.constraint_layout)
     ConstraintLayout constraintLayout;
+    @BindView(R.id.description_view)
+    TextView descriptionView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_frag, container, false);
         ButterKnife.bind(this, view);
-        constraintLayout = (ConstraintLayout) view.findViewById(R.id.constraint_layout);
-        temperatureView = (TextView) view.findViewById(R.id.temperature_view);
         return view;
     }
 
@@ -88,7 +88,8 @@ public class ContentFragment extends Fragment {
 
     @Subscribe
     public void onWeatherInfoEvent(WeatherInfoEvent weatherInfoEvent) {
-        temperatureView.setText(String.valueOf(weatherInfoEvent.weatherInfo.getTemperature()));
+        temperatureView.setText(String.valueOf(weatherInfoEvent.weatherInfo.getTemperature())+"°");
+        descriptionView.setText(weatherInfoEvent.weatherInfo.getDescription());
     }
 
     @Subscribe

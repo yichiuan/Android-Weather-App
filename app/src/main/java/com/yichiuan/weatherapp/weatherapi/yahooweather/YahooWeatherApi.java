@@ -37,7 +37,8 @@ public class YahooWeatherApi {
                 YahooWeatherResponse.class, new Response.Listener<YahooWeatherResponse>() {
             @Override
             public void onResponse(YahooWeatherResponse response) {
-                WeatherInfo info = new WeatherInfo(response.getChannel().getItem().getCondition().getTemp());
+                Condition condition = response.getChannel().getItem().getCondition();
+                WeatherInfo info = new WeatherInfo(condition.getTemp(), condition.getText());
                 EventBus.getDefault().post(new WeatherInfoEvent(info));
             }
         }, new Response.ErrorListener() {
