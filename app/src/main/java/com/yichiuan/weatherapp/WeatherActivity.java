@@ -16,6 +16,7 @@ import com.yichiuan.weatherapp.event.PermissionEvent;
 
 public class WeatherActivity extends AppCompatActivity {
 
+    final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final int REQUEST_PERMISSION_LOCATION = 1;
 
     @Override
@@ -33,8 +34,6 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void requestLocationPermission() {
-
-        final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
 
         if (ContextCompat.checkSelfPermission(this, LOCATION_PERMISSION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -63,7 +62,7 @@ public class WeatherActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PERMISSION_LOCATION) {
             int grantResult = grantResults[0];
             Log.i("WeatherActivity", "onRequestPermissionsResult granted = " + (grantResult == PackageManager.PERMISSION_GRANTED));
-            EventBus.getDefault().postSticky(new PermissionEvent(Manifest.permission.ACCESS_FINE_LOCATION, grantResult));
+            EventBus.getDefault().postSticky(new PermissionEvent(LOCATION_PERMISSION, grantResult));
         }
     }
 }

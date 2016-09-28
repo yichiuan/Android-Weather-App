@@ -3,7 +3,9 @@ package com.yichiuan.weatherapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -73,18 +75,58 @@ public class ContentFragment extends Fragment {
             for (String allprovide : allprovides) {
                 Log.i("WeatherActivity", allprovide);
             }
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            String bestProvider = locationManager.getBestProvider(new Criteria(), true);
+
+            if (bestProvider != null) {
+                Log.i("WeatherActivity", "bestProvider = " + bestProvider);
+                Snackbar.make(constraintLayout, "bestProvider = " + bestProvider, Snackbar.LENGTH_INDEFINITE)
+                        .show();
+            } else {
+                Log.e("WeatherActivity", "bestProvider is null.");
+                Snackbar.make(constraintLayout, "bestProvider is null.", Snackbar.LENGTH_INDEFINITE)
+                        .show();
+            }
+
+            locationManager.requestLocationUpdates(bestProvider, 0, 0, locationListener);
+
+            Location location = locationManager.getLastKnownLocation(bestProvider);
 
             if (location != null) {
                 WeatherService.getInstance().requestWeather(location.getLatitude(), location.getLongitude());
             } else {
-                Log.e("WeatherActivity", "location is null.");
+                Log.e("WeatherActivity", "LastKnownLocation is null.");
             }
+
         } else {
             Snackbar.make(constraintLayout, "沒權限", Snackbar.LENGTH_LONG)
                     .show();
         }
     }
+
+    LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+        @Override
+        public void onLocationChanged(Location location) {
+
+            WeatherService.getInstance().requestWeather(location.getLatitude(), location.getLongitude());
+            LocationManager locationManager =
+                    (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            locationManager.removeUpdates(locationListener);
+        }
+    };
 
     @Subscribe
     public void onWeatherInfoEvent(WeatherInfoEvent weatherInfoEvent) {
@@ -99,6 +141,8 @@ public class ContentFragment extends Fragment {
 
     @Subscribe(sticky = true)
     public void onPermissionEvent(PermissionEvent permissionEvent) {
-        receiveLocation();
+        if (permissionEvent.grantResult ==PackageManager.PERMISSION_GRANTED) {
+            receiveLocation();
+        }
     }
 }
