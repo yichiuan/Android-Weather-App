@@ -7,8 +7,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.yichiuan.weatherapp.event.ErrorResponseEvent;
 import com.yichiuan.weatherapp.event.WeatherInfoEvent;
+import com.yichiuan.weatherapp.model.Weather;
+import com.yichiuan.weatherapp.model.WeatherCode;
 import com.yichiuan.weatherapp.network.GsonRequest;
-import com.yichiuan.weatherapp.weatherapi.WeatherInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,11 +36,21 @@ public class YahooWeatherApi {
 
         GsonRequest weatherRequest = new GsonRequest<>(endpoint,
                 YahooWeatherResponse.class, new Response.Listener<YahooWeatherResponse>() {
-            @Override
-            public void onResponse(YahooWeatherResponse response) {
-                Condition condition = response.getChannel().getItem().getCondition();
-                WeatherInfo info = new WeatherInfo(condition.getTemp(), condition.getText());
-                EventBus.getDefault().post(new WeatherInfoEvent(info));
+                    @Override
+                    public void onResponse(YahooWeatherResponse response) {
+                        Condition condition = response.getChannel().getItem().getCondition();
+                        Atmosphere atmosphere = response.getChannel().getAtmosphere();
+                        Wind yahooWind = response.getChannel().getWind();
+                        Weather.Wind wind = new Weather.Wind(yahooWind.getSpeed(),
+                                yahooWind.getDirection());
+
+                        Weather weather = new Weather(getWeatherCodeFromYahoo(condition.getCode()),
+                                condition.getTemp(),
+                                condition.getText(),
+                                atmosphere.getHumidity(),
+                                wind);
+
+                EventBus.getDefault().post(new WeatherInfoEvent(weather));
             }
         }, new Response.ErrorListener() {
 
@@ -52,5 +63,14 @@ public class YahooWeatherApi {
         weatherRequest.setTag(YAHOO_WEATHER_TAG);
 
         requestQueue.add(weatherRequest);
+    }
+
+    private WeatherCode getWeatherCodeFromYahoo(short code) {
+        for (WeatherCode weatherCode : WeatherCode.values()) {
+            if (weatherCode.getCode() == code) {
+                return weatherCode;
+            }
+        }
+        return WeatherCode.NOT_AVAILABLE;
     }
 }

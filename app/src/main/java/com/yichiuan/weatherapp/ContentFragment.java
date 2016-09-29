@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.yichiuan.weatherapp.event.ErrorResponseEvent;
 import com.yichiuan.weatherapp.event.PermissionEvent;
 import com.yichiuan.weatherapp.event.WeatherInfoEvent;
+import com.yichiuan.weatherapp.model.Weather;
 import com.yichiuan.weatherapp.weatherapi.WeatherService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -130,8 +131,9 @@ public class ContentFragment extends Fragment {
 
     @Subscribe
     public void onWeatherInfoEvent(WeatherInfoEvent weatherInfoEvent) {
-        temperatureView.setText(String.valueOf(weatherInfoEvent.weatherInfo.getTemperature())+"°");
-        descriptionView.setText(weatherInfoEvent.weatherInfo.getDescription());
+        Weather weather = weatherInfoEvent.weather;
+        temperatureView.setText(String.valueOf(weather.getTemperature())+"°");
+        descriptionView.setText(weather.getDescription());
     }
 
     @Subscribe

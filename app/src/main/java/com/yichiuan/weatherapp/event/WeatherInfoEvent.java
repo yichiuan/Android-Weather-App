@@ -1,11 +1,11 @@
 package com.yichiuan.weatherapp.event;
 
-import com.yichiuan.weatherapp.weatherapi.WeatherInfo;
+import com.yichiuan.weatherapp.model.Weather;
 
 public class WeatherInfoEvent {
-    public final WeatherInfo weatherInfo;
+    public final Weather weather;
 
-    public WeatherInfoEvent(WeatherInfo weatherInfo) {
-        this.weatherInfo = weatherInfo;
+    public WeatherInfoEvent(Weather weather) {
+        this.weather = weather;
     }
 }
