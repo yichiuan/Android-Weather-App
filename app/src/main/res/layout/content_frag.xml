@@ -30,11 +30,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/description_view"
-        android:textSize="20sp"
+        android:textSize="14sp"
         android:layout_marginStart="16dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/temperature_view"
         tools:layout_constraintBaseline_creator="1"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toRightOf="@+id/temperature_view"
         android:layout_marginLeft="16dp" />
+
+    <TextView
+        android:text=""
+        tools:text="Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/weathericon_view"
+        android:textSize="36sp"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/description_view"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/description_view" />
+
 </android.support.constraint.ConstraintLayout>

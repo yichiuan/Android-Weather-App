@@ -3,6 +3,7 @@ package com.yichiuan.weatherapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -44,11 +45,14 @@ public class ContentFragment extends Fragment {
     ConstraintLayout constraintLayout;
     @BindView(R.id.description_view)
     TextView descriptionView;
+    @BindView(R.id.weathericon_view)
+    TextView weatherIconView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_frag, container, false);
         ButterKnife.bind(this, view);
+        weatherIconView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/weathericons.ttf"));
         return view;
     }
 
@@ -111,14 +115,17 @@ public class ContentFragment extends Fragment {
         public void onStatusChanged(String provider, int status, Bundle extras) {
 
         }
+
         @Override
         public void onProviderEnabled(String provider) {
 
         }
+
         @Override
         public void onProviderDisabled(String provider) {
 
         }
+
         @Override
         public void onLocationChanged(Location location) {
 
@@ -131,9 +138,13 @@ public class ContentFragment extends Fragment {
 
     @Subscribe
     public void onWeatherInfoEvent(WeatherInfoEvent weatherInfoEvent) {
-        Weather weather = weatherInfoEvent.weather;
-        temperatureView.setText(String.valueOf(weather.getTemperature())+"°");
+        updateWeather(weatherInfoEvent.weather);
+    }
+
+    public void updateWeather(Weather weather) {
+        temperatureView.setText(String.valueOf(weather.getTemperature()) + "°");
         descriptionView.setText(weather.getDescription());
+        weatherIconView.setText(WeatherHelper.getWeatherIconWith(weather.getWeatherCode()));
     }
 
     @Subscribe
@@ -143,8 +154,9 @@ public class ContentFragment extends Fragment {
 
     @Subscribe(sticky = true)
     public void onPermissionEvent(PermissionEvent permissionEvent) {
-        if (permissionEvent.grantResult ==PackageManager.PERMISSION_GRANTED) {
+        if (permissionEvent.grantResult == PackageManager.PERMISSION_GRANTED) {
             receiveLocation();
         }
     }
+
 }
