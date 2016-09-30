@@ -3,12 +3,12 @@ package com.yichiuan.weatherapp.model;
 
 public class Weather {
     private WeatherCode weatherCode;
-    private short temperature; // °C
+    private float temperature; // °F
     private String description;
     private byte humidity;
     private Wind wind;
 
-    public Weather(WeatherCode weatherCode, short temperature, String description, byte humidity, Wind wind) {
+    public Weather(WeatherCode weatherCode, float temperature, String description, byte humidity, Wind wind) {
         this.weatherCode = weatherCode;
         this.temperature = temperature;
         this.description = description;
@@ -24,11 +24,11 @@ public class Weather {
         this.weatherCode = weatherCode;
     }
 
-    public short getTemperature() {
+    public float getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(short temperature) {
+    public void setTemperature(float temperature) {
         this.temperature = temperature;
     }
 
@@ -54,5 +54,13 @@ public class Weather {
 
     public void setWind(Wind wind) {
         this.wind = wind;
+    }
+
+    public static float convertToFahrenheit(float temperature) {
+        return temperature * 1.8f + 32;
+    }
+
+    public static float convertToCelsius(float temperature) {
+        return (temperature - 32) * 5 / 9;
     }
 }

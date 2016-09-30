@@ -39,16 +39,22 @@ public class YahooWeatherApi {
                     @Override
                     public void onResponse(YahooWeatherResponse response) {
                         Condition condition = response.getChannel().getItem().getCondition();
+                        Units units = response.getChannel().getUnits();
+
+                        float temperature = units.getTemperature() == 'F' ?
+                                condition.getTemp() : Weather.convertToFahrenheit(condition.getTemp());
+
                         Atmosphere atmosphere = response.getChannel().getAtmosphere();
                         Wind yahooWind = response.getChannel().getWind();
-                        Weather.Wind wind = new Weather.Wind(yahooWind.getSpeed(),
-                                yahooWind.getDirection());
+                        com.yichiuan.weatherapp.model.Wind wind =
+                                new com.yichiuan.weatherapp.model.Wind(yahooWind.getSpeed(),
+                                                                       yahooWind.getDirection());
 
                         Weather weather = new Weather(getWeatherCodeFromYahoo(condition.getCode()),
-                                condition.getTemp(),
-                                condition.getText(),
-                                atmosphere.getHumidity(),
-                                wind);
+                                                      temperature,
+                                                      condition.getText(),
+                                                      atmosphere.getHumidity(),
+                                                      wind);
 
                 EventBus.getDefault().post(new WeatherInfoEvent(weather));
             }

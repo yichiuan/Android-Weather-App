@@ -142,7 +142,8 @@ public class ContentFragment extends Fragment {
     }
 
     public void updateWeather(Weather weather) {
-        temperatureView.setText(String.valueOf(weather.getTemperature()) + "°");
+        int temperature = Math.round(Weather.convertToCelsius(weather.getTemperature()));
+        temperatureView.setText(String.valueOf(temperature) + "°");
         descriptionView.setText(weather.getDescription());
         weatherIconView.setText(WeatherHelper.getWeatherIconWith(weather.getWeatherCode()));
     }
