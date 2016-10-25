@@ -81,8 +81,13 @@ dependencies {
     compile "com.android.support:design:${libraries.supportVersion}"
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta1'
 
+    compile 'com.jakewharton.timber:timber:4.3.1'
+
     compile "com.google.code.gson:gson:${libraries.gson}"
     compile 'com.android.volley:volley:1.0.0'
+
+    compile "com.squareup.okhttp3:okhttp:${libraries.okhttp3}"
+    compile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp3}"
 
     // EventBus
     compile 'org.greenrobot:eventbus:3.0.0'
@@ -96,4 +101,8 @@ dependencies {
     debugCompile "com.squareup.leakcanary:leakcanary-android:${libraries.leakcanary}"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
+
+    // Stetho
+    compile "com.facebook.stetho:stetho:${libraries.stetho}"
+    compile "com.facebook.stetho:stetho-okhttp3:${libraries.stetho}"
 }

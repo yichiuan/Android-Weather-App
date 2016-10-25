@@ -2,10 +2,14 @@ package com.yichiuan.weatherapp;
 
 import android.app.Application;
 import android.os.StrictMode;
+import android.util.Log;
 
+import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
+
+import timber.log.Timber;
 
 
 public class WeatherApplication extends Application {
@@ -35,6 +39,34 @@ public class WeatherApplication extends Application {
         }
         LeakCanary.install(this);
 
+        // Stetho init
+        Stetho.initializeWithDefaults(this);
+
+        // Timber init
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            Timber.plant(new FirebaseCrashReportTree());
+        }
+
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
+    }
+
+    private static class FirebaseCrashReportTree extends Timber.Tree {
+        @Override
+        protected void log(int priority, String tag, String message, Throwable throwable) {
+            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
+                return;
+            }
+//  Need Firebase Sdk
+//            Throwable t = throwable != null ? throwable : new Exception(message);
+//            FirebaseCrash.log(message);
+//
+//            if (t != null) {
+//                FirebaseCrash.report(t);
+//            }
+//        }
+
+        }
     }
 }
