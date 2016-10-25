@@ -87,7 +87,13 @@ dependencies {
     // EventBus
     compile 'org.greenrobot:eventbus:3.0.0'
     apt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
+
     // ButterKnife
     compile "com.jakewharton:butterknife:${libraries.butterknife}"
     apt "com.jakewharton:butterknife-compiler:${libraries.butterknife}"
+
+    // LeakCanary
+    debugCompile "com.squareup.leakcanary:leakcanary-android:${libraries.leakcanary}"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
 }
