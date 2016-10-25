@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp.model;
+package com.yichiuan.weatherapp.entity;
 
 public class Wind {
     private float speed; // mph

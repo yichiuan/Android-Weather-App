@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp;
+package com.yichiuan.weatherapp.ui.weather;
 
 import android.Manifest;
 import android.content.Context;
@@ -20,10 +20,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yichiuan.weatherapp.R;
+import com.yichiuan.weatherapp.WeatherHelper;
+import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.event.ErrorResponseEvent;
 import com.yichiuan.weatherapp.event.PermissionEvent;
-import com.yichiuan.weatherapp.event.WeatherInfoEvent;
-import com.yichiuan.weatherapp.model.Weather;
 import com.yichiuan.weatherapp.weatherapi.WeatherService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,9 +36,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ContentFragment extends Fragment {
+public class ContentFragment extends Fragment implements WeatherContract.View {
 
     private static final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
+
+    private WeatherContract.Presenter presenter;
 
     @BindView(R.id.temperature_view)
     TextView temperatureView;
@@ -47,6 +50,10 @@ public class ContentFragment extends Fragment {
     TextView descriptionView;
     @BindView(R.id.weathericon_view)
     TextView weatherIconView;
+
+    public static ContentFragment newInstance() {
+        return new ContentFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,10 +67,12 @@ public class ContentFragment extends Fragment {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        presenter.start();
     }
 
     @Override
     public void onStop() {
+        presenter.exit();
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -129,24 +138,13 @@ public class ContentFragment extends Fragment {
         @Override
         public void onLocationChanged(Location location) {
 
-            WeatherService.getInstance().requestWeather(location.getLatitude(), location.getLongitude());
             LocationManager locationManager =
                     (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             locationManager.removeUpdates(locationListener);
+
+            presenter.loadWeather(location.getLatitude(), location.getLongitude());
         }
     };
-
-    @Subscribe
-    public void onWeatherInfoEvent(WeatherInfoEvent weatherInfoEvent) {
-        updateWeather(weatherInfoEvent.weather);
-    }
-
-    public void updateWeather(Weather weather) {
-        int temperature = Math.round(Weather.convertToCelsius(weather.getTemperature()));
-        temperatureView.setText(String.valueOf(temperature) + "°");
-        descriptionView.setText(weather.getDescription());
-        weatherIconView.setText(WeatherHelper.getWeatherIconWith(weather.getWeatherCode()));
-    }
 
     @Subscribe
     public void onErrorResponseEvent(ErrorResponseEvent errorEvnet) {
@@ -160,4 +158,16 @@ public class ContentFragment extends Fragment {
         }
     }
 
+    @Override
+    public void showWeather(Weather weather) {
+        int temperature = Math.round(Weather.convertToCelsius(weather.getTemperature()));
+        temperatureView.setText(String.valueOf(temperature) + "°");
+        descriptionView.setText(weather.getDescription());
+        weatherIconView.setText(WeatherHelper.getWeatherIconWith(weather.getWeatherCode()));
+    }
+
+    @Override
+    public void setPresenter(WeatherContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
 }

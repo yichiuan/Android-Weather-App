@@ -1,6 +1,6 @@
 package com.yichiuan.weatherapp;
 
-import com.yichiuan.weatherapp.model.WeatherCode;
+import com.yichiuan.weatherapp.entity.WeatherCode;
 
 public class WeatherHelper {
     public static int getWeatherIconWith(WeatherCode code) {

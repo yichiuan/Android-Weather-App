@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp;
+package com.yichiuan.weatherapp.ui.weather;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
+
+import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.event.PermissionEvent;
 
 
@@ -19,15 +21,28 @@ public class WeatherActivity extends AppCompatActivity {
     final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final int REQUEST_PERMISSION_LOCATION = 1;
 
+    private WeatherPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        if (getSupportFragmentManager().findFragmentById(R.id.content_frame) == null) {
+        ContentFragment fragment =
+                (ContentFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (fragment == null) {
+            fragment = ContentFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
-                                       .replace(R.id.content_frame, new ContentFragment())
+                                       .replace(R.id.content_frame, fragment)
                                        .commit();
+        }
+
+        // Create the presenter
+        presenter = new WeatherPresenter(fragment);
+
+        // Load previously saved state, if available.
+        if (savedInstanceState != null) {
+
         }
 
         requestLocationPermission();

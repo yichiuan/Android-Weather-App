@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp.model;
+package com.yichiuan.weatherapp.entity;
 
 
 public enum WeatherCode {

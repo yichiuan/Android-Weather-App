@@ -7,8 +7,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.yichiuan.weatherapp.event.ErrorResponseEvent;
 import com.yichiuan.weatherapp.event.WeatherInfoEvent;
-import com.yichiuan.weatherapp.model.Weather;
-import com.yichiuan.weatherapp.model.WeatherCode;
+import com.yichiuan.weatherapp.entity.Weather;
+import com.yichiuan.weatherapp.entity.WeatherCode;
 import com.yichiuan.weatherapp.network.GsonRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,8 +46,8 @@ public class YahooWeatherApi {
 
                         Atmosphere atmosphere = response.getChannel().getAtmosphere();
                         Wind yahooWind = response.getChannel().getWind();
-                        com.yichiuan.weatherapp.model.Wind wind =
-                                new com.yichiuan.weatherapp.model.Wind(yahooWind.getSpeed(),
+                        com.yichiuan.weatherapp.entity.Wind wind =
+                                new com.yichiuan.weatherapp.entity.Wind(yahooWind.getSpeed(),
                                                                        yahooWind.getDirection());
 
                         Weather weather = new Weather(getWeatherCodeFromYahoo(condition.getCode()),
