@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
 
@@ -21,6 +22,10 @@ android {
             minifyEnabled true
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             useProguard false
+
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         staging.initWith(buildTypes.debug)
@@ -38,6 +43,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.releaseConfig
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -86,9 +96,6 @@ dependencies {
     compile "com.google.code.gson:gson:${libraries.gson}"
     compile 'com.android.volley:volley:1.0.0'
 
-    compile "com.squareup.okhttp3:okhttp:${libraries.okhttp3}"
-    compile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp3}"
-
     // EventBus
     compile 'org.greenrobot:eventbus:3.0.0'
     apt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
@@ -96,6 +103,17 @@ dependencies {
     // ButterKnife
     compile "com.jakewharton:butterknife:${libraries.butterknife}"
     apt "com.jakewharton:butterknife-compiler:${libraries.butterknife}"
+
+    // Retrofit
+    compile "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
+    compile "com.squareup.retrofit2:converter-gson:${libraries.retrofit}"
+    compile "com.squareup.retrofit2:adapter-rxjava:${libraries.retrofit}"
+    compile "com.squareup.okhttp3:okhttp:${libraries.okhttp3}"
+    compile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp3}"
+
+    // RxJava
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.1'
 
     // LeakCanary
     debugCompile "com.squareup.leakcanary:leakcanary-android:${libraries.leakcanary}"

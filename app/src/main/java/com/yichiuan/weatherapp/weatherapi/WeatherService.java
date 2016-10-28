@@ -1,23 +1,18 @@
 package com.yichiuan.weatherapp.weatherapi;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.NoCache;
-
+import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.weatherapi.yahooweather.YahooWeatherApi;
+
+import rx.Observable;
 
 public class WeatherService {
 
-    private volatile static WeatherService instance;
-    private RequestQueue requestQueue;
+    private static volatile WeatherService instance;
     private YahooWeatherApi weatherApi;
 
     private WeatherService() {
-        requestQueue = new RequestQueue(new NoCache(), new BasicNetwork(new HurlStack()));
-        requestQueue.start();
 
-        weatherApi = new YahooWeatherApi(requestQueue);
+        weatherApi = new YahooWeatherApi();
     }
 
     public static WeatherService getInstance() {
@@ -31,7 +26,7 @@ public class WeatherService {
         return instance;
     }
 
-    public void requestWeather(double latitude, double longitude) {
-        weatherApi.requestWeather(latitude, longitude);
+    public Observable<Weather> getWeather(double latitude, double longitude) {
+        return weatherApi.getWeather(latitude, longitude);
     }
 }

@@ -7,9 +7,10 @@ import com.yichiuan.weatherapp.ui.base.BaseView;
 public interface WeatherContract {
     interface View extends BaseView<Presenter> {
         void showWeather(Weather weather);
+        void showErrorMessage(String message);
     }
     interface Presenter extends BasePresenter {
-        void loadWeather(double latitude, double longitude);
+        void requestWeather(double latitude, double longitude);
         void exit();
     }
 }

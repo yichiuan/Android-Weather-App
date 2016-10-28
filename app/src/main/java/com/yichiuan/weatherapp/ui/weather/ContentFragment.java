@@ -13,7 +13,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +22,7 @@ import android.widget.Toast;
 import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.WeatherHelper;
 import com.yichiuan.weatherapp.entity.Weather;
-import com.yichiuan.weatherapp.event.ErrorResponseEvent;
 import com.yichiuan.weatherapp.event.PermissionEvent;
-import com.yichiuan.weatherapp.weatherapi.WeatherService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,9 +31,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 
 public class ContentFragment extends Fragment implements WeatherContract.View {
+
+    private static String TAG = "WeatherActivity";
 
     private static final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -87,17 +87,17 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
 
             List<String> allprovides = locationManager.getAllProviders();
             for (String allprovide : allprovides) {
-                Log.i("WeatherActivity", allprovide);
+                Timber.tag(TAG).i(allprovide);
             }
 
             String bestProvider = locationManager.getBestProvider(new Criteria(), true);
 
             if (bestProvider != null) {
-                Log.i("WeatherActivity", "bestProvider = " + bestProvider);
+                Timber.tag(TAG).i("bestProvider = " + bestProvider);
                 Snackbar.make(constraintLayout, "bestProvider = " + bestProvider, Snackbar.LENGTH_INDEFINITE)
                         .show();
             } else {
-                Log.e("WeatherActivity", "bestProvider is null.");
+                Timber.tag(TAG).e("bestProvider is null.");
                 Snackbar.make(constraintLayout, "bestProvider is null.", Snackbar.LENGTH_INDEFINITE)
                         .show();
             }
@@ -107,9 +107,9 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
             Location location = locationManager.getLastKnownLocation(bestProvider);
 
             if (location != null) {
-                WeatherService.getInstance().requestWeather(location.getLatitude(), location.getLongitude());
+                presenter.requestWeather(location.getLatitude(), location.getLongitude());
             } else {
-                Log.e("WeatherActivity", "LastKnownLocation is null.");
+                Timber.tag(TAG).e("LastKnownLocation is null.");
             }
 
         } else {
@@ -142,14 +142,9 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
                     (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             locationManager.removeUpdates(locationListener);
 
-            presenter.loadWeather(location.getLatitude(), location.getLongitude());
+            presenter.requestWeather(location.getLatitude(), location.getLongitude());
         }
     };
-
-    @Subscribe
-    public void onErrorResponseEvent(ErrorResponseEvent errorEvnet) {
-        Toast.makeText(getActivity().getApplicationContext(), errorEvnet.message, Toast.LENGTH_LONG).show();
-    }
 
     @Subscribe(sticky = true)
     public void onPermissionEvent(PermissionEvent permissionEvent) {
@@ -164,6 +159,11 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
         temperatureView.setText(String.valueOf(temperature) + "°");
         descriptionView.setText(weather.getDescription());
         weatherIconView.setText(WeatherHelper.getWeatherIconWith(weather.getWeatherCode()));
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override

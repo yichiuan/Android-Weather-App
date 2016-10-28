@@ -15,6 +15,8 @@ import org.greenrobot.eventbus.EventBus;
 import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.event.PermissionEvent;
 
+import timber.log.Timber;
+
 
 public class WeatherActivity extends AppCompatActivity {
 
@@ -54,13 +56,10 @@ public class WeatherActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, LOCATION_PERMISSION)) {
                 Snackbar.make(findViewById(R.id.root_layout), R.string.open_location, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.open, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                ActivityCompat.requestPermissions(WeatherActivity.this,
-                                        new String[]{LOCATION_PERMISSION}, REQUEST_PERMISSION_LOCATION);
-                            }
-                        })
+                        .setAction(R.string.open, v ->
+                            ActivityCompat.requestPermissions(WeatherActivity.this,
+                                    new String[]{LOCATION_PERMISSION}, REQUEST_PERMISSION_LOCATION)
+                        )
                         .show();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{LOCATION_PERMISSION},
@@ -76,7 +75,8 @@ public class WeatherActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_LOCATION) {
             int grantResult = grantResults[0];
-            Log.i("WeatherActivity", "onRequestPermissionsResult granted = " + (grantResult == PackageManager.PERMISSION_GRANTED));
+            Timber.tag("WeatherActivity")
+                  .i("onRequestPermissionsResult granted = %b", (grantResult == PackageManager.PERMISSION_GRANTED));
             EventBus.getDefault().postSticky(new PermissionEvent(LOCATION_PERMISSION, grantResult));
         }
     }
