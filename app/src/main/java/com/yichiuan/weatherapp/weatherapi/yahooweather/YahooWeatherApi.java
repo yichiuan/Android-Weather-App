@@ -2,9 +2,10 @@ package com.yichiuan.weatherapp.weatherapi.yahooweather;
 
 import android.support.annotation.NonNull;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
+import com.yichiuan.weatherapp.BuildConfig;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherCode;
+import com.yichiuan.weatherapp.util.StethoHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,18 +33,22 @@ public class YahooWeatherApi {
     private YahooWeatherService yahooWeatherService;
 
     public YahooWeatherApi() {
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor((message) ->
-                Timber.tag("YahooWeatherApi").d(message));
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging =
+                    new HttpLoggingInterceptor((message) ->
+                            Timber.tag("YahooWeatherApi").d(message));
+            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            httpClientBuilder.addInterceptor(logging);
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(ONNECT_TIMEOUT_SECINDS, TimeUnit.SECONDS)
-                .addNetworkInterceptor(new StethoInterceptor())
-                .addInterceptor(logging)
-                .build();
+            StethoHelper.configureInterceptor(httpClientBuilder);
+        }
 
+        httpClientBuilder.connectTimeout(ONNECT_TIMEOUT_SECINDS, TimeUnit.SECONDS);
+
+        OkHttpClient client = httpClientBuilder.build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YAHOO_WEATHER_API_BASE)

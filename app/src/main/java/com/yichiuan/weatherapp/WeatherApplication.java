@@ -4,8 +4,8 @@ import android.app.Application;
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
+import com.yichiuan.weatherapp.util.StethoHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,7 +40,9 @@ public class WeatherApplication extends Application {
         LeakCanary.install(this);
 
         // Stetho init
-        Stetho.initializeWithDefaults(this);
+        if (BuildConfig.DEBUG) {
+            StethoHelper.init(this);
+        }
 
         // Timber init
         if (BuildConfig.DEBUG) {

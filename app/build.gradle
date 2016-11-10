@@ -141,8 +141,8 @@ dependencies {
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
 
     // Stetho
-    compile "com.facebook.stetho:stetho:${libraries.stetho}"
-    compile "com.facebook.stetho:stetho-okhttp3:${libraries.stetho}"
+    debugCompile "com.facebook.stetho:stetho:${libraries.stetho}"
+    debugCompile "com.facebook.stetho:stetho-okhttp3:${libraries.stetho}"
 
     // Dependencies for local unit tests
     testCompile 'junit:junit:4.12'
