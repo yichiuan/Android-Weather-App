@@ -45,6 +45,31 @@ android {
         }
     }
 
+    // If you need to add more flavors, consider using flavor dimensions.
+    productFlavors {
+        mock {
+            applicationIdSuffix = ".mock"
+        }
+        prod {
+
+        }
+    }
+
+    // Remove mockRelease as it's not needed.
+    android.variantFilter { variant ->
+        if(variant.buildType.name.equals('release')
+                && variant.getFlavors().get(0).name.equals('mock')) {
+            variant.setIgnore(true);
+        }
+    }
+
+    // Always show the result of every unit test, even if it passes.
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -83,18 +108,13 @@ dexcount {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.hamcrest:hamcrest-all:1.3'
-    testCompile "com.squareup.okhttp3:okhttp:${libraries.okhttp3}"
-
     compile "com.android.support:appcompat-v7:${libraries.supportVersion}"
     compile "com.android.support:design:${libraries.supportVersion}"
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
 
     compile 'com.jakewharton.timber:timber:4.3.1'
 
     compile "com.google.code.gson:gson:${libraries.gson}"
-    compile 'com.android.volley:volley:1.0.0'
 
     // EventBus
     compile 'org.greenrobot:eventbus:3.0.0'
@@ -113,7 +133,7 @@ dependencies {
 
     // RxJava
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'io.reactivex:rxjava:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.2'
 
     // LeakCanary
     debugCompile "com.squareup.leakcanary:leakcanary-android:${libraries.leakcanary}"
@@ -123,4 +143,32 @@ dependencies {
     // Stetho
     compile "com.facebook.stetho:stetho:${libraries.stetho}"
     compile "com.facebook.stetho:stetho-okhttp3:${libraries.stetho}"
+
+    // Dependencies for local unit tests
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:2.2.15"
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
+
+    androidTestCompile 'org.mockito:mockito-core:2.2.15'
+    androidTestCompile 'com.github.blueapron:dexmaker:2.0'
+
+    // Android Testing Support Library
+    androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
+    androidTestCompile "com.android.support.test:rules:${libraries.testrunner}"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:${libraries.espresso}"
+    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:${libraries.espresso}") {
+        exclude module: 'recyclerview-v7'
+        exclude module: 'design'
+        exclude module: 'support-v4'
+    }
+    androidTestCompile "com.android.support.test.espresso:espresso-idling-resource:${libraries.espresso}"
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:${libraries.espresso}"
+}
+
+/*
+Resolves dependency versions across test and production APKs, specifically, transitive
+dependencies. This is required since Espresso internally has a dependency on support-annotations.
+*/
+configurations.all {
+    resolutionStrategy.force "com.android.support:support-annotations:${libraries.supportVersion}"
 }
