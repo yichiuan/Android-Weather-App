@@ -35,5 +35,6 @@ ext {
         // for test
         testrunner       : "0.5",
         espresso         : "2.2.2",
+        mockito          : "2.2.15",
     ]
 }

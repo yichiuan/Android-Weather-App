@@ -4,18 +4,13 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 
-import org.greenrobot.eventbus.EventBus;
-
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.event.PermissionEvent;
 
-import timber.log.Timber;
+import org.greenrobot.eventbus.EventBus;
 
 
 public class WeatherActivity extends AppCompatActivity {
@@ -45,39 +40,24 @@ public class WeatherActivity extends AppCompatActivity {
         // Load previously saved state, if available.
         if (savedInstanceState != null) {
 
-        }
-
-        requestLocationPermission();
-    }
-
-    private void requestLocationPermission() {
-
-        if (ContextCompat.checkSelfPermission(this, LOCATION_PERMISSION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, LOCATION_PERMISSION)) {
-                Snackbar.make(findViewById(R.id.root_layout), R.string.open_location, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.open, v ->
-                            ActivityCompat.requestPermissions(WeatherActivity.this,
-                                    new String[]{LOCATION_PERMISSION}, REQUEST_PERMISSION_LOCATION)
-                        )
-                        .show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{LOCATION_PERMISSION},
-                        REQUEST_PERMISSION_LOCATION);
-            }
         } else {
-            EventBus.getDefault().postSticky(new PermissionEvent(LOCATION_PERMISSION, PackageManager.PERMISSION_GRANTED));
-        }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_LOCATION) {
-            int grantResult = grantResults[0];
-            Timber.tag("WeatherActivity")
-                  .i("onRequestPermissionsResult granted = %b", (grantResult == PackageManager.PERMISSION_GRANTED));
-            EventBus.getDefault().postSticky(new PermissionEvent(LOCATION_PERMISSION, grantResult));
+            RxPermissions.getInstance(this)
+                    .requestEach(Manifest.permission.ACCESS_FINE_LOCATION)
+                    .subscribe(permission -> {
+                        if (permission.granted) {
+                            EventBus.getDefault().postSticky(new PermissionEvent(LOCATION_PERMISSION,
+                                    PackageManager.PERMISSION_GRANTED));
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            Snackbar.make(findViewById(R.id.root_layout), R.string.open_location,
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+                        else {
+                            Snackbar.make(findViewById(R.id.root_layout), "permission denied",
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+                    });
         }
+
     }
 }
