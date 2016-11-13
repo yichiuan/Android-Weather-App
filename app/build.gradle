@@ -77,22 +77,21 @@ android {
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
-
-def keystoreProperties = new Properties()
-
-if (keystorePropertiesFile.canRead()) {
-    // Load your keystore.properties file into the keystoreProperties object.
-    // keystore.properties contains
-    //    storeFile=locationOfstoreFile
-    //    storePassword=storePassword
-    //    keyPassword=keyPassword
-    //    keyAlias=keyAlias
+if (keystorePropertiesFile.exists()) {
+    def keystoreProperties = new Properties()
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-    android.signingConfigs.releaseConfig.storeFile file(keystoreProperties['storeFile'])
-    android.signingConfigs.releaseConfig.storePassword keystoreProperties['storePassword']
-    android.signingConfigs.releaseConfig.keyAlias keystoreProperties['keyAlias']
-    android.signingConfigs.releaseConfig.keyPassword keystoreProperties['keyPassword']
+    if (keystoreProperties.containsKey('storeFile') && keystoreProperties.containsKey('storePassword') &&
+            keystoreProperties.containsKey('keyAlias') && keystoreProperties.containsKey('keyPassword')) {
+        android.signingConfigs.releaseConfig.storeFile = file(keystoreProperties['storeFile'])
+        android.signingConfigs.releaseConfig.storePassword = keystoreProperties['storePassword']
+        android.signingConfigs.releaseConfig.keyAlias = keystoreProperties['keyAlias']
+        android.signingConfigs.releaseConfig.keyPassword = keystoreProperties['keyPassword']
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    android.buildTypes.release.signingConfig = null
 }
 
 apt {
