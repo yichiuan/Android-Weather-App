@@ -149,8 +149,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:${libraries.mockito}"
     testCompile 'org.hamcrest:hamcrest-all:1.3'
-
-    androidTestCompile 'com.github.blueapron:dexmaker:2.0'
+    testCompile 'org.assertj:assertj-core:3.5.2'
 
     // Android Testing Support Library
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
@@ -163,6 +162,8 @@ dependencies {
     }
     androidTestCompile "com.android.support.test.espresso:espresso-idling-resource:${libraries.espresso}"
     androidTestCompile "com.android.support.test.espresso:espresso-intents:${libraries.espresso}"
+
+    androidTestCompile 'com.github.blueapron:dexmaker:2.0'
 }
 
 /*

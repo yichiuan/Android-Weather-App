@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp.weatherapi.yahooweather;
+package com.yichiuan.weatherapp.data.yahooweather;
 
 
 import retrofit2.http.GET;

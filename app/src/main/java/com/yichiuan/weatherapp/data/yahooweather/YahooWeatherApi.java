@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp.weatherapi.yahooweather;
+package com.yichiuan.weatherapp.data.yahooweather;
 
 import android.support.annotation.NonNull;
 
@@ -15,7 +15,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 
@@ -60,11 +59,14 @@ public class YahooWeatherApi {
         yahooWeatherService = retrofit.create(YahooWeatherService.class);
     }
 
+    public YahooWeatherApi(YahooWeatherService yahooWeatherService) {
+        this.yahooWeatherService = yahooWeatherService;
+    }
+
     public Observable<Weather> getWeather(double latitude, double longitude) {
         String yql = String.format(YQL_TEMPLATE, latitude, longitude);
 
         return yahooWeatherService.getWeather(yql)
-                .subscribeOn(Schedulers.io())
                 .map(response -> {return processWeather(response);});
     }
 

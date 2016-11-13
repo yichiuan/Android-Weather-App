@@ -1,0 +1,161 @@
+{
+  "query": {
+    "count": 1,
+    "created": "2016-11-13T09:01:11Z",
+    "lang": "en-US",
+    "diagnostics": {
+      "publiclyCallable": "true",
+      "url": {
+        "execution-start-time": "1",
+        "execution-stop-time": "7",
+        "execution-time": "6",
+        "content": "http://weather-ydn-yql.media.yahoo.com:4080/v3/public/weather/rss?w=2502265"
+      },
+      "user-time": "8",
+      "service-time": "6",
+      "build-version": "2.0.78"
+    },
+    "results": {
+      "channel": {
+        "units": {
+          "distance": "mi",
+          "pressure": "in",
+          "speed": "mph",
+          "temperature": "F"
+        },
+        "title": "Yahoo! Weather - Sunnyvale, CA, US",
+        "link": "http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/",
+        "description": "Yahoo! Weather for Sunnyvale, CA, US",
+        "language": "en-us",
+        "lastBuildDate": "Sun, 13 Nov 2016 01:01 AM PST",
+        "ttl": "60",
+        "location": {
+          "city": "Sunnyvale",
+          "country": "United States",
+          "region": " CA"
+        },
+        "wind": {
+          "chill": "57",
+          "direction": "205",
+          "speed": "4"
+        },
+        "atmosphere": {
+          "humidity": "86",
+          "pressure": "1013.0",
+          "rising": "0",
+          "visibility": "16.1"
+        },
+        "astronomy": {
+          "sunrise": "6:46 am",
+          "sunset": "4:58 pm"
+        },
+        "image": {
+          "title": "Yahoo! Weather",
+          "width": "142",
+          "height": "18",
+          "link": "http://weather.yahoo.com",
+          "url": "http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif"
+        },
+        "item": {
+          "title": "Conditions for Sunnyvale, CA, US at 12:00 AM PST",
+          "lat": "37.371609",
+          "long": "-122.038254",
+          "link": "http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/",
+          "pubDate": "Sun, 13 Nov 2016 12:00 AM PST",
+          "condition": {
+            "code": "27",
+            "date": "Sun, 13 Nov 2016 12:00 AM PST",
+            "temp": "57",
+            "text": "Mostly Cloudy"
+          },
+          "forecast": [
+            {
+              "code": "30",
+              "date": "13 Nov 2016",
+              "day": "Sun",
+              "high": "71",
+              "low": "53",
+              "text": "Partly Cloudy"
+            },
+            {
+              "code": "30",
+              "date": "14 Nov 2016",
+              "day": "Mon",
+              "high": "71",
+              "low": "51",
+              "text": "Partly Cloudy"
+            },
+            {
+              "code": "28",
+              "date": "15 Nov 2016",
+              "day": "Tue",
+              "high": "71",
+              "low": "51",
+              "text": "Mostly Cloudy"
+            },
+            {
+              "code": "34",
+              "date": "16 Nov 2016",
+              "day": "Wed",
+              "high": "61",
+              "low": "52",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "34",
+              "date": "17 Nov 2016",
+              "day": "Thu",
+              "high": "63",
+              "low": "46",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "34",
+              "date": "18 Nov 2016",
+              "day": "Fri",
+              "high": "67",
+              "low": "44",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "30",
+              "date": "19 Nov 2016",
+              "day": "Sat",
+              "high": "67",
+              "low": "50",
+              "text": "Partly Cloudy"
+            },
+            {
+              "code": "28",
+              "date": "20 Nov 2016",
+              "day": "Sun",
+              "high": "67",
+              "low": "52",
+              "text": "Mostly Cloudy"
+            },
+            {
+              "code": "28",
+              "date": "21 Nov 2016",
+              "day": "Mon",
+              "high": "65",
+              "low": "51",
+              "text": "Mostly Cloudy"
+            },
+            {
+              "code": "12",
+              "date": "22 Nov 2016",
+              "day": "Tue",
+              "high": "64",
+              "low": "50",
+              "text": "Rain"
+            }
+          ],
+          "description": "<![CDATA[<img src=\"http://l.yimg.com/a/i/us/we/52/27.gif\"/>\n<BR />\n<b>Current Conditions:</b>\n<BR />Mostly Cloudy\n<BR />\n<BR />\n<b>Forecast:</b>\n<BR /> Sun - Partly Cloudy. High: 71Low: 53\n<BR /> Mon - Partly Cloudy. High: 71Low: 51\n<BR /> Tue - Mostly Cloudy. High: 71Low: 51\n<BR /> Wed - Mostly Sunny. High: 61Low: 52\n<BR /> Thu - Mostly Sunny. High: 63Low: 46\n<BR />\n<BR />\n<a href=\"http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/\">Full Forecast at Yahoo! Weather</a>\n<BR />\n<BR />\n(provided by <a href=\"http://www.weather.com\" >The Weather Channel</a>)\n<BR />\n]]>",
+          "guid": {
+            "isPermaLink": "false"
+          }
+        }
+      }
+    }
+  }
+}

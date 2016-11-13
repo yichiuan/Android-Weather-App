@@ -1,7 +1,7 @@
 package com.yichiuan.weatherapp;
 
 import com.google.gson.Gson;
-import com.yichiuan.weatherapp.weatherapi.yahooweather.*;
+import com.yichiuan.weatherapp.data.yahooweather.*;
 
 
 import org.junit.Test;

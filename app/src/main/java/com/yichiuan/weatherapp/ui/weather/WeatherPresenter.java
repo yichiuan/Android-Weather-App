@@ -2,10 +2,11 @@ package com.yichiuan.weatherapp.ui.weather;
 
 
 import com.yichiuan.weatherapp.entity.Weather;
-import com.yichiuan.weatherapp.weatherapi.WeatherService;
+import com.yichiuan.weatherapp.data.WeatherRepository;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class WeatherPresenter implements WeatherContract.Presenter {
@@ -21,7 +22,8 @@ public class WeatherPresenter implements WeatherContract.Presenter {
     @Override
     public void requestWeather(double latitude, double longitude) {
 
-        WeatherService.getInstance().getWeather(latitude, longitude)
+        WeatherRepository.getInstance().getWeather(latitude, longitude)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Weather>() {
                     @Override
