@@ -44,7 +44,8 @@ public class WeatherRepositoryTest {
     @Test
     public void getWeather_OkResponse_obtainCorrectWeather() throws IOException {
         //Given
-        when(yahooWeatherService.getWeather(anyString())).thenReturn(Observable.just(getFakeWeather()));
+        when(yahooWeatherService.getWeather(anyString())).
+                thenReturn(Observable.just(getFakeWeather()));
 
         //When
         double latitude = 10.0;
@@ -57,7 +58,8 @@ public class WeatherRepositoryTest {
         subscriber.assertNoErrors();
 
         Weather weather = subscriber.getOnNextEvents().get(0);
-        assertThat(Weather.convertToCelsius(weather.getTemperature())).isCloseTo(13.888f, within(0.001f));
+        assertThat(Weather.convertToCelsius(weather.getTemperature()))
+                .isCloseTo(13.888f, within(0.001f));
     }
 
     @SuppressLint("NewApi")

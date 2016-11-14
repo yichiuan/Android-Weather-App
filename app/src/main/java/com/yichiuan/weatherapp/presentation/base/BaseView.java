@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp.ui.base;
+package com.yichiuan.weatherapp.presentation.base;
 
 
 public interface BaseView<T> {

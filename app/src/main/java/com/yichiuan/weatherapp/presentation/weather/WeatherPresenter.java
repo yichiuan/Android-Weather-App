@@ -1,30 +1,41 @@
-package com.yichiuan.weatherapp.ui.weather;
+package com.yichiuan.weatherapp.presentation.weather;
 
-
-import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.data.WeatherRepository;
+import com.yichiuan.weatherapp.entity.Weather;
 
 import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Scheduler;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class WeatherPresenter implements WeatherContract.Presenter {
 
     private final WeatherContract.View weatherView;
 
-    public WeatherPresenter(WeatherContract.View weatherView) {
-        this.weatherView = weatherView;
+    private final WeatherRepository weatherRepository;
 
+    private final Scheduler ioScheduler;
+    private final Scheduler mainScheduler;
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    public WeatherPresenter(WeatherContract.View weatherView,
+                            WeatherRepository weatherRepository,
+                            Scheduler ioScheduler,
+                            Scheduler mainScheduler) {
+        this.weatherView = weatherView;
+        this.weatherRepository = weatherRepository;
+        this.ioScheduler = ioScheduler;
+        this.mainScheduler = mainScheduler;
         weatherView.setPresenter(this);
     }
 
     @Override
     public void requestWeather(double latitude, double longitude) {
 
-        WeatherRepository.getInstance().getWeather(latitude, longitude)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        weatherRepository.getWeather(latitude, longitude)
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
                 .subscribe(new Observer<Weather>() {
                     @Override
                     public void onCompleted() {
@@ -46,12 +57,12 @@ public class WeatherPresenter implements WeatherContract.Presenter {
     }
 
     @Override
-    public void start() {
+    public void subscribe() {
 
     }
 
     @Override
-    public void exit() {
-
+    public void unsubscribe() {
+        compositeSubscription.clear();
     }
 }

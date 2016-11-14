@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp.ui.weather;
+package com.yichiuan.weatherapp.presentation.weather;
 
 import android.Manifest;
 import android.content.Context;
@@ -67,12 +67,12 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        presenter.start();
+        presenter.subscribe();
     }
 
     @Override
     public void onStop() {
-        presenter.exit();
+        presenter.unsubscribe();
         EventBus.getDefault().unregister(this);
         super.onStop();
     }

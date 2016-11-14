@@ -1,4 +1,4 @@
-package com.yichiuan.weatherapp.ui.weather;
+package com.yichiuan.weatherapp.presentation.weather;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -7,10 +7,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
+import com.yichiuan.weatherapp.Injection;
 import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.event.PermissionEvent;
 
 import org.greenrobot.eventbus.EventBus;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class WeatherActivity extends AppCompatActivity {
@@ -35,7 +39,11 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
         // Create the presenter
-        presenter = new WeatherPresenter(fragment);
+        presenter = new WeatherPresenter(
+                fragment,
+                Injection.provideWeatherRepository(),
+                Schedulers.io(),
+                AndroidSchedulers.mainThread());
 
         // Load previously saved state, if available.
         if (savedInstanceState != null) {

@@ -1,8 +1,8 @@
-package com.yichiuan.weatherapp.ui.weather;
+package com.yichiuan.weatherapp.presentation.weather;
 
 import com.yichiuan.weatherapp.entity.Weather;
-import com.yichiuan.weatherapp.ui.base.BasePresenter;
-import com.yichiuan.weatherapp.ui.base.BaseView;
+import com.yichiuan.weatherapp.presentation.base.BasePresenter;
+import com.yichiuan.weatherapp.presentation.base.BaseView;
 
 public interface WeatherContract {
     interface View extends BaseView<Presenter> {
@@ -11,6 +11,5 @@ public interface WeatherContract {
     }
     interface Presenter extends BasePresenter {
         void requestWeather(double latitude, double longitude);
-        void exit();
     }
 }
