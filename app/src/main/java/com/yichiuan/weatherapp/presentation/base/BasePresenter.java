@@ -1,8 +1,18 @@
 package com.yichiuan.weatherapp.presentation.base;
 
+import rx.subscriptions.CompositeSubscription;
 
-public interface BasePresenter {
-    void subscribe();
+public class BasePresenter implements MvpPresenter {
 
-    void unsubscribe();
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Override
+    public void subscribe() {
+
+    }
+
+    @Override
+    public void unsubscribe() {
+        compositeSubscription.clear();
+    }
 }

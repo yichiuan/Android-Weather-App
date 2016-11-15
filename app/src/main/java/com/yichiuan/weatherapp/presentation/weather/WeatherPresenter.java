@@ -2,13 +2,13 @@ package com.yichiuan.weatherapp.presentation.weather;
 
 import com.yichiuan.weatherapp.data.WeatherRepository;
 import com.yichiuan.weatherapp.entity.Weather;
+import com.yichiuan.weatherapp.presentation.base.BasePresenter;
 
 import rx.Observer;
 import rx.Scheduler;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public class WeatherPresenter implements WeatherContract.Presenter {
+public class WeatherPresenter extends BasePresenter implements WeatherContract.Presenter {
 
     private final WeatherContract.View weatherView;
 
@@ -16,8 +16,6 @@ public class WeatherPresenter implements WeatherContract.Presenter {
 
     private final Scheduler ioScheduler;
     private final Scheduler mainScheduler;
-
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public WeatherPresenter(WeatherContract.View weatherView,
                             WeatherRepository weatherRepository,
@@ -54,15 +52,5 @@ public class WeatherPresenter implements WeatherContract.Presenter {
                         weatherView.showWeather(weather);
                     }
                 });
-    }
-
-    @Override
-    public void subscribe() {
-
-    }
-
-    @Override
-    public void unsubscribe() {
-        compositeSubscription.clear();
     }
 }
