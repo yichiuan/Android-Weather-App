@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,7 @@ import com.yichiuan.weatherapp.event.PermissionEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -108,6 +112,7 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
 
             if (location != null) {
                 presenter.requestWeather(location.getLatitude(), location.getLongitude());
+                showRegion(location.getLatitude(), location.getLongitude());
             } else {
                 Timber.tag(TAG).e("LastKnownLocation is null.");
             }
@@ -143,8 +148,27 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
             locationManager.removeUpdates(locationListener);
 
             presenter.requestWeather(location.getLatitude(), location.getLongitude());
+            showRegion(location.getLatitude(), location.getLongitude());
         }
     };
+
+
+    private void showRegion(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(getContext());
+
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); //放入座標
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses != null && addresses.size() > 0) {
+            Address address = addresses.get(0);
+            ((AppCompatActivity)getActivity()).getSupportActionBar()
+                    .setTitle(address.getAdminArea()+address.getLocality());
+        }
+
+    }
 
     @Subscribe(sticky = true)
     public void onPermissionEvent(PermissionEvent permissionEvent) {
