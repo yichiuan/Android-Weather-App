@@ -13,16 +13,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/temperature_view"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="56sp"
+        android:textColor="@android:color/white"
+        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="86sp"
-        app:layout_constraintHorizontal_bias="0.4" />
+        app:layout_constraintBottom_toTopOf="@+id/weathericon_view"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:text=""
@@ -31,23 +33,36 @@
         android:layout_height="wrap_content"
         android:id="@+id/description_view"
         android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/weathericon_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/temperature_view"
-        tools:layout_constraintBaseline_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toRightOf="@+id/temperature_view"
-        android:layout_marginLeft="16dp" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintVertical_bias="0.100000024" />
 
-    <TextView
-        android:text=""
-        tools:text="Icon"
+    <com.yichiuan.weatherapp.presentation.view.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/weathericon_view"
-        android:textSize="36sp"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/description_view"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/description_view" />
+        android:textSize="120sp"
+        app:font="fonts/weathericons.ttf"
+        android:textColor="@android:color/white"
+        tools:text="@string/wi_rain"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
 
 </android.support.constraint.ConstraintLayout>
