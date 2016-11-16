@@ -94,11 +94,11 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
 
             if (bestProvider != null) {
                 Timber.tag(TAG).i("bestProvider = " + bestProvider);
-                Snackbar.make(constraintLayout, "bestProvider = " + bestProvider, Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(constraintLayout, "bestProvider = " + bestProvider, Snackbar.LENGTH_LONG)
                         .show();
             } else {
                 Timber.tag(TAG).e("bestProvider is null.");
-                Snackbar.make(constraintLayout, "bestProvider is null.", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(constraintLayout, "bestProvider is null.", Snackbar.LENGTH_LONG)
                         .show();
             }
 
