@@ -1,5 +1,6 @@
 package com.yichiuan.weatherapp.presentation.base;
 
+import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 public class BasePresenter implements MvpPresenter {
@@ -14,5 +15,9 @@ public class BasePresenter implements MvpPresenter {
     @Override
     public void stop() {
         compositeSubscription.clear();
+    }
+
+    protected void addSubscription(Subscription subscription) {
+        this.compositeSubscription.add(subscription);
     }
 }

@@ -31,7 +31,7 @@ public class WeatherPresenter extends BasePresenter implements WeatherContract.P
     @Override
     public void requestWeather(double latitude, double longitude) {
 
-        weatherRepository.getWeather(latitude, longitude)
+        addSubscription(weatherRepository.getWeather(latitude, longitude)
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(new Observer<Weather>() {
@@ -51,6 +51,6 @@ public class WeatherPresenter extends BasePresenter implements WeatherContract.P
                         Timber.i("requestWeather onNext");
                         weatherView.showWeather(weather);
                     }
-                });
+                }));
     }
 }
