@@ -7,12 +7,12 @@ public class BasePresenter implements MvpPresenter {
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
-    public void subscribe() {
+    public void start() {
 
     }
 
     @Override
-    public void unsubscribe() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

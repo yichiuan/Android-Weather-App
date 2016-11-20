@@ -71,12 +71,12 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        presenter.subscribe();
+        presenter.start();
     }
 
     @Override
     public void onStop() {
-        presenter.unsubscribe();
+        presenter.stop();
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
