@@ -16,67 +16,22 @@
 #   public *;
 #}
 
--keepattributes InnerClasses,EnclosingMethod
-
 # For Eventbus
--keepattributes *Annotation*
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 
-# For Volley
-#-keep class com.android.volley.** {*;}
-#-keep class com.android.volley.toolbox.** {*;}
-#-keep class com.android.volley.Response$* { *; }
-#-keep class com.android.volley.Request$* { *; }
-#-keep class com.android.volley.RequestQueue$* { *; }
-#-keep class com.android.volley.toolbox.HurlStack$* { *; }
-#-keep class com.android.volley.toolbox.ImageLoader$* { *; }
-
-##---------------Begin: proguard configuration for Gson  ----------
-# Gson uses generic type information stored in a class file when working with fields. Proguard
-# removes such information by default, so configure it to keep all of it.
--keepattributes Signature
-
-# For using GSON @Expose annotation
--keepattributes *Annotation*
-
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
-#-keep class com.google.gson.stream.** { *; }
-
+# Gson
 # Application classes that will be serialized/deserialized over Gson
--keep class com.yichiuan.weatherapp.** { *; }
+-keep class com.yichiuan.weatherapp.data.yahooweather.** { *; }
 
-# Prevent proguard from stripping interface information from TypeAdapterFactory,
-# JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
-#-keep class * implements com.google.gson.TypeAdapterFactory
-#-keep class * implements com.google.gson.JsonSerializer
-#-keep class * implements com.google.gson.JsonDeserializer
-
-##---------------End: proguard configuration for Gson  ----------
-
-# okhttp3
-
--keepattributes Signature
--keepattributes *Annotation*
--keep class okhttp3.** { *; }
--keep interface okhttp3.** { *; }
--dontwarn okhttp3.**
--dontnote okhttp3.**
-
-# Okio
--keep class sun.misc.Unsafe { *; }
--dontwarn java.nio.file.*
--dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
-
+# okio
+-dontwarn okio.**
 
 # Retrofit2
 
 # Platform calls Class.forName on types which do not exist on Android to determine platform.
 -dontnote retrofit2.Platform
-# Platform used when running on RoboVM on iOS. Will not be used at runtime.
--dontnote retrofit2.Platform$IOS$MainThreadExecutor
 # Platform used when running on Java 8 VMs. Will not be used at runtime.
 -dontwarn retrofit2.Platform$Java8
 # Retain generic type information for use by reflection by converters and adapters.
@@ -84,11 +39,12 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 
--dontwarn retrofit2.**
--keep class retrofit2.** { *; }
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
 }
+
+# If Retrofit2 >= 2.2, don't need this
+-dontwarn retrofit2.adapter.rxjava.CompletableHelper$**
 
 # Rxjava
 -dontwarn sun.misc.**
