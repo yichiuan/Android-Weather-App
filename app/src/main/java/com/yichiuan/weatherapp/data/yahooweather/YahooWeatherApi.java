@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.yichiuan.weatherapp.BuildConfig;
 import com.yichiuan.weatherapp.data.WeatherAdapterFactory;
+import com.yichiuan.weatherapp.data.WeatherException;
 import com.yichiuan.weatherapp.data.yahooweather.model.Atmosphere;
 import com.yichiuan.weatherapp.data.yahooweather.model.Channel;
 import com.yichiuan.weatherapp.data.yahooweather.model.Condition;
@@ -85,6 +86,10 @@ public class YahooWeatherApi {
 
     @NonNull
     private Weather processWeather(YahooWeatherResponse response) {
+        if (response.query().results() == null) {
+            throw new WeatherException("Can't find weather info.");
+        }
+
         Channel channel = response.query().results().channel();
         Condition condition = channel.item().condition();
         Units units = channel.units();
