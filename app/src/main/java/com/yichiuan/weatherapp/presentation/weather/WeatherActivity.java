@@ -59,9 +59,9 @@ public class WeatherActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
 
         } else {
+            RxPermissions rxPermissions = new RxPermissions(this);
 
-            RxPermissions.getInstance(this)
-                    .requestEach(Manifest.permission.ACCESS_FINE_LOCATION)
+            rxPermissions.requestEach(Manifest.permission.ACCESS_FINE_LOCATION)
                     .subscribe(permission -> {
                         if (permission.granted) {
                             EventBus.getDefault().postSticky(new PermissionEvent(LOCATION_PERMISSION,
