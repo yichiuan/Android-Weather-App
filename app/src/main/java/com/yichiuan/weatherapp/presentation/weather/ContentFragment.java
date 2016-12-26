@@ -164,8 +164,12 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
         }
         if (addresses != null && addresses.size() > 0) {
             Address address = addresses.get(0);
+
+            String locality = address.getLocality();
+            if (locality == null) locality = "";
+
             ((AppCompatActivity)getActivity()).getSupportActionBar()
-                    .setTitle(address.getAdminArea()+address.getLocality());
+                    .setTitle(address.getAdminArea() + locality);
         }
         else {
             Timber.e("no address be found.");
