@@ -114,6 +114,8 @@ dependencies {
     compile "com.jakewharton.timber:timber:${libraries.timber}"
 
     compile "com.google.code.gson:gson:${libraries.gson}"
+    apt "com.ryanharter.auto.value:auto-value-gson:${libraries.auto_value_gson}"
+    provided "com.ryanharter.auto.value:auto-value-gson:${libraries.auto_value_gson}"
 
     // EventBus
     compile "org.greenrobot:eventbus:${libraries.eventbus}"

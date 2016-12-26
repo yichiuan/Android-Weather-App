@@ -1,7 +1,13 @@
 package com.yichiuan.weatherapp;
 
 import com.google.gson.Gson;
-import com.yichiuan.weatherapp.data.yahooweather.*;
+import com.yichiuan.weatherapp.data.yahooweather.model.Atmosphere;
+import com.yichiuan.weatherapp.data.yahooweather.model.Channel;
+import com.yichiuan.weatherapp.data.yahooweather.model.Condition;
+import com.yichiuan.weatherapp.data.yahooweather.model.Forecast;
+import com.yichiuan.weatherapp.data.yahooweather.model.Item;
+import com.yichiuan.weatherapp.data.yahooweather.model.Wind;
+import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
 
 
 import org.junit.Test;
@@ -42,22 +48,22 @@ public class YahooWeatherApiTest {
         YahooWeatherResponse weatherResponse = gson.fromJson(response.body().string(),
                 YahooWeatherResponse.class);
 
-        Channel channel = weatherResponse.getChannel();
+        Channel channel = weatherResponse.query().results().channel();
         assertThat(channel, notNullValue());
 
-        Wind wind = channel.getWind();
+        Wind wind = channel.wind();
         assertThat(wind, notNullValue());
 
-        Atmosphere atmosphere = channel.getAtmosphere();
+        Atmosphere atmosphere = channel.atmosphere();
         assertThat(atmosphere, notNullValue());
 
-        Item item = channel.getItem();
+        Item item = channel.item();
         assertThat(item, notNullValue());
 
-        Condition condition = item.getCondition();
+        Condition condition = item.condition();
         assertThat(condition, notNullValue());
 
-        ArrayList<Forecast> forecasts = item.getForecast();
+        ArrayList<Forecast> forecasts = item.forecast();
         assertThat(forecasts, notNullValue());
     }
 }

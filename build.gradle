@@ -31,6 +31,7 @@ ext {
         retrofit         : "2.1.0",
         okhttp3          : "3.5.0",
         gson             : "2.8.0",
+        auto_value_gson  : '0.4.5',
         rxandroid        : "1.2.1",
         rxjava           : "1.2.4",
         rxpermissions    : "0.9.1@aar",

@@ -5,7 +5,7 @@ import android.annotation.SuppressLint;
 import com.google.gson.Gson;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.data.yahooweather.YahooWeatherApi;
-import com.yichiuan.weatherapp.data.yahooweather.YahooWeatherResponse;
+import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
 import com.yichiuan.weatherapp.data.yahooweather.YahooWeatherService;
 
 import org.junit.Before;

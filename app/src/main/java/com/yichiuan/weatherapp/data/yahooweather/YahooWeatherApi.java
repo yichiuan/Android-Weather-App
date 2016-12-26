@@ -2,7 +2,16 @@ package com.yichiuan.weatherapp.data.yahooweather;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.yichiuan.weatherapp.BuildConfig;
+import com.yichiuan.weatherapp.data.WeatherAdapterFactory;
+import com.yichiuan.weatherapp.data.yahooweather.model.Atmosphere;
+import com.yichiuan.weatherapp.data.yahooweather.model.Channel;
+import com.yichiuan.weatherapp.data.yahooweather.model.Condition;
+import com.yichiuan.weatherapp.data.yahooweather.model.Units;
+import com.yichiuan.weatherapp.data.yahooweather.model.Wind;
+import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherCode;
 import com.yichiuan.weatherapp.util.StethoHelper;
@@ -49,10 +58,14 @@ public class YahooWeatherApi {
 
         OkHttpClient client = httpClientBuilder.build();
 
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapterFactory(WeatherAdapterFactory.create())
+                .create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YAHOO_WEATHER_API_BASE)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
@@ -72,22 +85,23 @@ public class YahooWeatherApi {
 
     @NonNull
     private Weather processWeather(YahooWeatherResponse response) {
-        Condition condition = response.getChannel().getItem().getCondition();
-        Units units = response.getChannel().getUnits();
+        Channel channel = response.query().results().channel();
+        Condition condition = channel.item().condition();
+        Units units = channel.units();
 
-        float temperature = units.getTemperature() == 'F' ?
-                condition.getTemp() : Weather.convertToFahrenheit(condition.getTemp());
+        float temperature = units.temperature() == 'F' ?
+                condition.temp() : Weather.convertToFahrenheit(condition.temp());
 
-        Atmosphere atmosphere = response.getChannel().getAtmosphere();
-        Wind yahooWind = response.getChannel().getWind();
+        Atmosphere atmosphere = channel.atmosphere();
+        Wind yahooWind = channel.wind();
         com.yichiuan.weatherapp.entity.Wind wind =
-                new com.yichiuan.weatherapp.entity.Wind(yahooWind.getSpeed(),
-                                                       yahooWind.getDirection());
+                new com.yichiuan.weatherapp.entity.Wind(yahooWind.speed(),
+                                                       yahooWind.direction());
 
-        return new Weather(getWeatherCodeFromYahoo(condition.getCode()),
+        return new Weather(getWeatherCodeFromYahoo(condition.code()),
                                       temperature,
-                                      condition.getText(),
-                                      atmosphere.getHumidity(),
+                                      condition.text(),
+                                      atmosphere.humidity(),
                                       wind);
     }
 
