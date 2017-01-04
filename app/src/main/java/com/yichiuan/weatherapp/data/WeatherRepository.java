@@ -1,5 +1,6 @@
 package com.yichiuan.weatherapp.data;
 
+import com.yichiuan.weatherapp.Injection;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.data.yahooweather.YahooWeatherApi;
 
@@ -12,7 +13,7 @@ public class WeatherRepository {
 
     private WeatherRepository() {
 
-        weatherApi = new YahooWeatherApi();
+        weatherApi = new YahooWeatherApi(Injection.provideRetrofitForYahooWeather());
     }
 
     public static WeatherRepository getInstance() {
