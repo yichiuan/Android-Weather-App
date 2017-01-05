@@ -186,7 +186,7 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
 
     @Override
     public void showWeather(Weather weather) {
-        int temperature = Math.round(Weather.convertToCelsius(weather.getTemperature()));
+        int temperature = Math.round(weather.getTemperature());
         temperatureView.setText(String.valueOf(temperature) + "°");
         descriptionView.setText(weather.getDescription());
         weatherIconView.setText(WeatherHelper.getWeatherIconWith(weather.getWeatherCode()));

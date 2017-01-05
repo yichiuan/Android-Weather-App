@@ -58,7 +58,7 @@ public class WeatherRepositoryTest {
         subscriber.assertNoErrors();
 
         Weather weather = subscriber.getOnNextEvents().get(0);
-        assertThat(Weather.convertToCelsius(weather.getTemperature()))
+        assertThat(weather.getTemperature())
                 .isCloseTo(13.888f, within(0.001f));
     }
 

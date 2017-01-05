@@ -12,6 +12,7 @@ import com.yichiuan.weatherapp.data.yahooweather.model.Wind;
 import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherCode;
+import com.yichiuan.weatherapp.util.TemperatureUtil;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -53,7 +54,7 @@ public class YahooWeatherApi {
         Units units = channel.units();
 
         float temperature = units.temperature() == 'F' ?
-                condition.temp() : Weather.convertToFahrenheit(condition.temp());
+                TemperatureUtil.convertToCelsiusFromFahrenheit(condition.temp()) : condition.temp();
 
         Atmosphere atmosphere = channel.atmosphere();
         Wind yahooWind = channel.wind();

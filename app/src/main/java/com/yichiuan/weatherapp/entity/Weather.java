@@ -3,7 +3,7 @@ package com.yichiuan.weatherapp.entity;
 
 public class Weather {
     private WeatherCode weatherCode;
-    private float temperature; // °F
+    private float temperature; // °C
     private String description;
     private byte humidity;
     private Wind wind;
@@ -54,13 +54,5 @@ public class Weather {
 
     public void setWind(Wind wind) {
         this.wind = wind;
-    }
-
-    public static float convertToFahrenheit(float temperature) {
-        return temperature * 1.8f + 32;
-    }
-
-    public static float convertToCelsius(float temperature) {
-        return (temperature - 32) * 5 / 9;
     }
 }
