@@ -93,6 +93,28 @@ public class WeatherHelper {
                 resID = R.string.wi_snow; break;
             case ISOLATED_THUDERSHOWERS:
                 resID = R.string.wi_day_storm_showers; break;
+            case LIGHTNING:
+                resID = R.string.wi_lightning; break;
+            case SPRINKLE:
+                resID = R.string.wi_sprinkle; break;
+            case RAIN:
+                resID = R.string.wi_rain; break;
+            case MIST:
+                resID = R.string.wi_fog; break;
+            case VOLCANIC_ASH:
+                resID = R.string.wi_dust; break;
+            case SQUALLS:
+                resID = R.string.wi_strong_wind; break;
+            case CLEAR_SKY:
+                resID = R.string.wi_day_sunny; break;
+            case CALM:
+                resID = R.string.wi_na; break;
+            case BREEZE:
+                resID = R.string.wi_windy; break;
+            case GALE:
+                resID = R.string.wi_strong_wind; break;
+            case STORM:
+                resID = R.string.wi_strong_wind; break;
             default:
                 resID = R.string.wi_na; break;
         }

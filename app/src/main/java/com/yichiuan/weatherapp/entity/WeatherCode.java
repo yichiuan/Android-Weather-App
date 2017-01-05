@@ -50,6 +50,20 @@ public enum WeatherCode {
     THUNDERSHOWERS(45),
     SNOW_SHOWERS(46),
     ISOLATED_THUDERSHOWERS(47),
+    LIGHTNING(48),
+    SPRINKLE(49),
+    RAIN(50),
+    MIST(51),
+    VOLCANIC_ASH(52),
+    SQUALLS(53),
+    CLEAR_SKY(54),
+
+    // Wind
+    CALM(200),
+    BREEZE(201),
+    GALE(202),
+    STORM(203),
+
     NOT_AVAILABLE(10000);
 
     private final int code;

@@ -21,6 +21,8 @@ public class Injection {
 
     private static final String YAHOO_WEATHER_API_BASE = "https://query.yahooapis.com/v1/public/";
 
+    private static final String OPENWEATHERMAP_API_BASE = "http://api.openweathermap.org/data/2.5/";
+
     private static OkHttpClient okHttpClient;
 
     private static Gson gson;
@@ -64,6 +66,15 @@ public class Injection {
     public static Retrofit provideRetrofitForYahooWeather() {
         return new Retrofit.Builder()
                 .baseUrl(YAHOO_WEATHER_API_BASE)
+                .client(provideOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(provideGson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+    }
+
+    public static Retrofit provideRetrofitForOpenWeatherMap() {
+        return new Retrofit.Builder()
+                .baseUrl(OPENWEATHERMAP_API_BASE)
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(provideGson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
