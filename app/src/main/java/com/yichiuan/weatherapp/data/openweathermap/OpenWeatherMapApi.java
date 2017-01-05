@@ -110,7 +110,7 @@ public class OpenWeatherMapApi {
 
             // Group 7xx: Atmosphere
             case 701:
-                return WeatherCode.SNOW;
+                return WeatherCode.MIST;
             case 711:
                 return WeatherCode.SMOKY;
             case 721:
