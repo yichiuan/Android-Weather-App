@@ -3,10 +3,12 @@ package com.yichiuan.weatherapp.data;
 import android.annotation.SuppressLint;
 
 import com.google.gson.Gson;
-import com.yichiuan.weatherapp.entity.Weather;
+import com.google.gson.GsonBuilder;
 import com.yichiuan.weatherapp.data.yahooweather.YahooWeatherApi;
-import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
 import com.yichiuan.weatherapp.data.yahooweather.YahooWeatherService;
+import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
+import com.yichiuan.weatherapp.entity.Weather;
+import com.yichiuan.weatherapp.entity.WeatherApiSourceType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +29,7 @@ import static org.assertj.core.api.Assertions.within;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+
 @RunWith(MockitoJUnitRunner.class)
 public class WeatherRepositoryTest {
 
@@ -35,9 +38,13 @@ public class WeatherRepositoryTest {
     @Mock
     YahooWeatherService yahooWeatherService;
 
+    @Mock
+    WeatherPrefs weatherPrefs;
+
     @Before
     public void setUp() {
-        weatherRepository = WeatherRepository.getInstance();
+        when(weatherPrefs.getWeatherApiSourceType()).thenReturn(WeatherApiSourceType.YAHOO);
+        weatherRepository = WeatherRepository.getInstance(weatherPrefs);
         weatherRepository.setWeatherApi(new YahooWeatherApi(yahooWeatherService));
     }
 
@@ -73,7 +80,11 @@ public class WeatherRepositoryTest {
             }
         }
 
-        return new Gson().fromJson(builder.toString(), YahooWeatherResponse.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapterFactory(WeatherAdapterFactory.create())
+                .create();
+
+        return gson.fromJson(builder.toString(), YahooWeatherResponse.class);
     }
 
     private static String getFileFromPath(Object obj, String fileName) {

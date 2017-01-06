@@ -3,6 +3,7 @@ package com.yichiuan.weatherapp.data.yahooweather;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.yichiuan.weatherapp.data.WeatherApi;
 import com.yichiuan.weatherapp.data.WeatherException;
 import com.yichiuan.weatherapp.data.yahooweather.model.Atmosphere;
 import com.yichiuan.weatherapp.data.yahooweather.model.Channel;
@@ -18,7 +19,7 @@ import retrofit2.Retrofit;
 import rx.Observable;
 
 
-public class YahooWeatherApi {
+public class YahooWeatherApi implements WeatherApi {
 
     private static final String YAHOO_WEATHER_TAG = "Yahoo";
 
@@ -27,19 +28,20 @@ public class YahooWeatherApi {
 
     private YahooWeatherService yahooWeatherService;
 
-    public YahooWeatherApi(Retrofit retrofit) {
+    public YahooWeatherApi(@NonNull Retrofit retrofit) {
         yahooWeatherService = retrofit.create(YahooWeatherService.class);
     }
 
-    public YahooWeatherApi(YahooWeatherService yahooWeatherService) {
+    public YahooWeatherApi(@NonNull YahooWeatherService yahooWeatherService) {
         this.yahooWeatherService = yahooWeatherService;
     }
 
+    @Override
     public Observable<Weather> getWeather(double latitude, double longitude) {
         String yql = String.format(YQL_TEMPLATE, latitude, longitude);
 
         return yahooWeatherService.getWeather(yql)
-                .map(response -> {return processWeather(response);});
+                .map(this::processWeather);
     }
 
     @VisibleForTesting

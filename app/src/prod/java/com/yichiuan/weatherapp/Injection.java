@@ -1,8 +1,12 @@
 package com.yichiuan.weatherapp;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.yichiuan.weatherapp.data.WeatherAdapterFactory;
+import com.yichiuan.weatherapp.data.WeatherPrefs;
 import com.yichiuan.weatherapp.data.WeatherRepository;
 import com.yichiuan.weatherapp.util.StethoHelper;
 
@@ -27,8 +31,12 @@ public class Injection {
 
     private static Gson gson;
 
-    public static WeatherRepository provideWeatherRepository() {
-        return WeatherRepository.getInstance();
+    public static WeatherPrefs provideWeatherPrefs(@NonNull Context context) {
+        return WeatherPrefs.getInstance(context);
+    }
+
+    public static WeatherRepository provideWeatherRepository(@NonNull WeatherPrefs weatherPrefs) {
+        return WeatherRepository.getInstance(weatherPrefs);
     }
 
     public static Gson provideGson() {

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import com.yichiuan.weatherapp.BuildConfig;
+import com.yichiuan.weatherapp.data.WeatherApi;
 import com.yichiuan.weatherapp.data.openweathermap.model.Main;
 import com.yichiuan.weatherapp.data.openweathermap.model.Response;
 import com.yichiuan.weatherapp.data.openweathermap.model.WeatherItem;
@@ -15,19 +16,20 @@ import retrofit2.Retrofit;
 import rx.Observable;
 
 
-public class OpenWeatherMapApi {
+public class OpenWeatherMapApi implements WeatherApi {
 
     private static final String key = BuildConfig.OPENWEATHERMAP_API_KEY;
 
-    private OpenWeatherMapService openWeatherMapService;
+    private final OpenWeatherMapService openWeatherMapService;
 
-    public OpenWeatherMapApi(Retrofit retrofit) {
+    public OpenWeatherMapApi(@NonNull Retrofit retrofit) {
         openWeatherMapService = retrofit.create(OpenWeatherMapService.class);
     }
 
+    @Override
     public Observable<Weather> getWeather(double latitude, double longitude) {
         return openWeatherMapService.getWeather(latitude, longitude, key)
-                .map(response -> {return processWeather(response);});
+                .map(this::processWeather);
     }
 
     @VisibleForTesting

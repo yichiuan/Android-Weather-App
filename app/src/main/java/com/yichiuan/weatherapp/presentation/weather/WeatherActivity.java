@@ -51,7 +51,7 @@ public class WeatherActivity extends AppCompatActivity {
         // Create the presenter
         presenter = new WeatherPresenter(
                 fragment,
-                Injection.provideWeatherRepository(),
+                Injection.provideWeatherRepository(Injection.provideWeatherPrefs(getApplicationContext())),
                 Schedulers.io(),
                 AndroidSchedulers.mainThread());
 
