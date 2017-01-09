@@ -11,12 +11,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,6 +30,7 @@ import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.WeatherHelper;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.event.PermissionEvent;
+import com.yichiuan.weatherapp.event.WeatherApiChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,13 +43,17 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class ContentFragment extends Fragment implements WeatherContract.View {
+public class WeatherFragment extends Fragment implements WeatherContract.View {
 
-    private static String TAG = "WeatherActivity";
+    private static final String TAG = "WeatherFragment";
 
     private static final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
 
+    private static final long TWO_MINUTES = 1000 * 60 * 2;
+
     private WeatherContract.Presenter presenter;
+
+    private Location currnetLocation;
 
     @BindView(R.id.temperature_view)
     TextView temperatureView;
@@ -55,8 +64,14 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
     @BindView(R.id.weathericon_view)
     TextView weatherIconView;
 
-    public static ContentFragment newInstance() {
-        return new ContentFragment();
+    public static WeatherFragment newInstance() {
+        return new WeatherFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -81,7 +96,27 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
         super.onStop();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_weather, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.weather_api:
+                WeatherApiDialogFragment.showDialog(getActivity());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void receiveLocation() {
+        if (currnetLocation != null && !isTooOld(currnetLocation.getTime())) {
+            return;
+        }
 
         if (ContextCompat.checkSelfPermission(getContext(), LOCATION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -89,36 +124,35 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
             LocationManager locationManager =
                     (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-            List<String> allprovides = locationManager.getAllProviders();
-            for (String allprovide : allprovides) {
-                Timber.tag(TAG).i(allprovide);
+            Criteria criteria = new Criteria();
+            criteria.setPowerRequirement(Criteria. POWER_LOW);
+
+            String bestProvider = locationManager.getBestProvider(criteria, true);
+            if (bestProvider == null || bestProvider.equals(LocationManager.PASSIVE_PROVIDER)) {
+                Snackbar.make(constraintLayout, "Please enable android location.", Snackbar.LENGTH_LONG)
+                        .show();
+                ((AppCompatActivity) getActivity()).getSupportActionBar()
+                        .setTitle("");
+                return;
             }
 
-            String bestProvider = locationManager.getBestProvider(new Criteria(), true);
-
-            if (bestProvider != null) {
-                Timber.tag(TAG).i("bestProvider = " + bestProvider);
-                Snackbar.make(constraintLayout, "bestProvider = " + bestProvider, Snackbar.LENGTH_LONG)
-                        .show();
-            } else {
-                Timber.tag(TAG).e("bestProvider is null.");
-                Snackbar.make(constraintLayout, "bestProvider is null.", Snackbar.LENGTH_LONG)
-                        .show();
-            }
-
-            locationManager.requestLocationUpdates(bestProvider, 0, 0, locationListener);
+            Timber.tag(TAG).i("bestProvider = " + bestProvider);
 
             Location location = locationManager.getLastKnownLocation(bestProvider);
-
             if (location != null) {
-                presenter.requestWeather(location.getLatitude(), location.getLongitude());
-                showRegion(location.getLatitude(), location.getLongitude());
+                if (isTooOld(location.getTime())) {
+                    locationManager.requestSingleUpdate(bestProvider, locationListener, null);
+                } else {
+                    currnetLocation = location;
+                }
+
             } else {
                 Timber.tag(TAG).e("LastKnownLocation is null.");
+                locationManager.requestSingleUpdate(bestProvider, locationListener, null);
             }
 
         } else {
-            Snackbar.make(constraintLayout, "沒權限", Snackbar.LENGTH_LONG)
+            Snackbar.make(constraintLayout, "No Location Permission", Snackbar.LENGTH_LONG)
                     .show();
         }
     }
@@ -142,37 +176,42 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
 
         @Override
         public void onLocationChanged(Location location) {
-
-            LocationManager locationManager =
-                    (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            locationManager.removeUpdates(locationListener);
-
-            presenter.requestWeather(location.getLatitude(), location.getLongitude());
-            showRegion(location.getLatitude(), location.getLongitude());
+            currnetLocation = location;
+            requestWeather();
         }
     };
 
+    private boolean isTooOld(long thisTime) {
+        long timeDelta = System.currentTimeMillis() - thisTime;
+        return timeDelta > TWO_MINUTES;
+    }
 
     private void showRegion(double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(getContext());
+        if (Geocoder.isPresent()) {
+            Geocoder geocoder = new Geocoder(getContext());
 
-        List<Address> addresses = null;
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1); //放入座標
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (addresses != null && addresses.size() > 0) {
-            Address address = addresses.get(0);
+            List<Address> addresses = null;
+            try {
+                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
 
-            String locality = address.getLocality();
-            if (locality == null) locality = "";
+                String locality = address.getLocality();
+                if (locality == null) locality = "";
 
-            ((AppCompatActivity)getActivity()).getSupportActionBar()
-                    .setTitle(address.getAdminArea() + locality);
+                ((AppCompatActivity) getActivity()).getSupportActionBar()
+                        .setTitle(address.getAdminArea() + locality);
+            } else {
+                Timber.e("No address be found.");
+            }
         }
         else {
-            Timber.e("no address be found.");
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setTitle("");
+            Timber.e("No Geocoder");
         }
 
     }
@@ -181,7 +220,22 @@ public class ContentFragment extends Fragment implements WeatherContract.View {
     public void onPermissionEvent(PermissionEvent permissionEvent) {
         if (permissionEvent.grantResult == PackageManager.PERMISSION_GRANTED) {
             receiveLocation();
+            requestWeather();
         }
+    }
+
+    private void requestWeather() {
+        if (currnetLocation != null) {
+            presenter.requestWeather(currnetLocation.getLatitude(), currnetLocation.getLongitude());
+            showRegion(currnetLocation.getLatitude(), currnetLocation.getLongitude());
+        }
+    }
+
+    @Subscribe
+    public void onWeatherApiChange(WeatherApiChangeEvent event) {
+        presenter.changeWeatherApi(event.type);
+        receiveLocation();
+        requestWeather();
     }
 
     @Override

@@ -2,4 +2,9 @@
     <string name="app_name">WeatherApp</string>
     <string name="open_location">Please open location</string>
     <string name="open">Open</string>
+    <string name="menu_weather_api">Weather Api</string>
+    <string-array name="weather_api_source">
+        <item>Yahoo</item>
+        <item>OpenWeatherMap</item>
+    </string-array>
 </resources>

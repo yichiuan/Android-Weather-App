@@ -36,13 +36,12 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weather);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Android Exercise");
         setSupportActionBar(toolbar);
 
-        ContentFragment fragment =
-                (ContentFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        WeatherFragment fragment =
+                (WeatherFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (fragment == null) {
-            fragment = ContentFragment.newInstance();
+            fragment = WeatherFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                                        .replace(R.id.content_frame, fragment)
                                        .commit();

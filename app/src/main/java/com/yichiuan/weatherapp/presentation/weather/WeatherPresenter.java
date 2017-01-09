@@ -2,6 +2,7 @@ package com.yichiuan.weatherapp.presentation.weather;
 
 import com.yichiuan.weatherapp.data.WeatherRepository;
 import com.yichiuan.weatherapp.entity.Weather;
+import com.yichiuan.weatherapp.entity.WeatherApiSourceType;
 import com.yichiuan.weatherapp.presentation.base.BasePresenter;
 
 import rx.Observer;
@@ -52,5 +53,10 @@ public class WeatherPresenter extends BasePresenter implements WeatherContract.P
                         weatherView.showWeather(weather);
                     }
                 }));
+    }
+
+    @Override
+    public void changeWeatherApi(@WeatherApiSourceType int type) {
+        weatherRepository.changeWeatherApiSourceType(type);
     }
 }
