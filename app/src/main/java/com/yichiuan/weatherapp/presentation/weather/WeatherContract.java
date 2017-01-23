@@ -9,6 +9,7 @@ public interface WeatherContract {
     interface View extends BaseView<Presenter> {
         void showWeather(Weather weather);
         void showErrorMessage(String message);
+        void setRefreshing(boolean enable);
     }
     interface Presenter extends MvpPresenter {
         void requestWeather(double latitude, double longitude);

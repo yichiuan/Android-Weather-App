@@ -39,18 +39,21 @@ public class WeatherPresenter extends BasePresenter implements WeatherContract.P
                     @Override
                     public void onCompleted() {
                         Timber.i("requestWeather onCompleted");
+                        weatherView.setRefreshing(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Timber.e(e);
                         weatherView.showErrorMessage(e.getMessage());
+                        weatherView.setRefreshing(false);
                     }
 
                     @Override
                     public void onNext(Weather weather) {
                         Timber.i("requestWeather onNext");
                         weatherView.showWeather(weather);
+                        weatherView.setRefreshing(false);
                     }
                 }));
     }

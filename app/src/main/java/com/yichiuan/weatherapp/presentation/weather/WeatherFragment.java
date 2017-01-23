@@ -16,6 +16,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,11 +50,17 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
 
     private static final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
 
-    private static final long TWO_MINUTES = 1000 * 60 * 2;
+    private static final long TWO_MINUTES = 1000 * 60 * 5;
 
     private WeatherContract.Presenter presenter;
 
-    private Location currnetLocation;
+    private Location currentLocation;
+
+    private LocationManager locationManager;
+    private String locationProvider;
+
+    @BindView(R.id.refreshlayout_weather)
+    SwipeRefreshLayout refreshLayout;
 
     @BindView(R.id.textview_weather_temperature)
     TextView temperatureView;
@@ -81,13 +88,25 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        locationManager =
+                (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_frag, container, false);
         ButterKnife.bind(this, view);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshWeather(true);
+            }
+        });
+
         weatherIconView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/weathericons.ttf"));
+
         return view;
     }
 
@@ -122,47 +141,73 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
         }
     }
 
-    private void receiveLocation() {
-        if (currnetLocation != null && !isTooOld(currnetLocation.getTime())) {
+    private void refreshWeather(boolean forceUpdateLocaton) {
+
+        if (!checkLocationAvailableFromDevice()) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
             return;
         }
 
+        setRefreshing(true);
+
+        // first time
+        if (currentLocation == null) {
+            if (receiveLocation(false)) {
+                requestWeather();
+            }
+        } else {
+            if (forceUpdateLocaton || isTooOld(currentLocation.getTime())) {
+                receiveLocation(true);
+            } else {
+                requestWeather();
+            }
+        }
+    }
+
+    private boolean checkLocationAvailableFromDevice() {
         if (ContextCompat.checkSelfPermission(getContext(), LOCATION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED) {
-
-            LocationManager locationManager =
-                    (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
             Criteria criteria = new Criteria();
             criteria.setPowerRequirement(Criteria.POWER_LOW);
 
-            String bestProvider = locationManager.getBestProvider(criteria, true);
-            if (bestProvider == null || bestProvider.equals(LocationManager.PASSIVE_PROVIDER)) {
+            locationProvider= locationManager.getBestProvider(criteria, true);
+            if (locationProvider == null || locationProvider.equals(LocationManager.PASSIVE_PROVIDER)) {
                 Snackbar.make(constraintLayout, "Please enable android location.", Snackbar.LENGTH_LONG)
                         .show();
-                ((AppCompatActivity) getActivity()).getSupportActionBar()
-                        .setTitle("");
-                return;
+                return false;
             }
 
-            Timber.tag(TAG).i("bestProvider = " + bestProvider);
-
-            Location location = locationManager.getLastKnownLocation(bestProvider);
-            if (location != null) {
-                if (isTooOld(location.getTime())) {
-                    locationManager.requestSingleUpdate(bestProvider, locationListener, null);
-                } else {
-                    currnetLocation = location;
-                }
-
-            } else {
-                Timber.tag(TAG).e("LastKnownLocation is null.");
-                locationManager.requestSingleUpdate(bestProvider, locationListener, null);
-            }
+            Timber.tag(TAG).i("bestProvider = " + locationProvider);
+            return true;
 
         } else {
             Snackbar.make(constraintLayout, "No Location Permission", Snackbar.LENGTH_LONG)
                     .show();
+            return false;
+        }
+    }
+
+    /**
+     * Receive the location from GPS or Network
+     *
+     * @return boolean Return true if location is immediately updated.
+     */
+    @SuppressWarnings("MissingPermission")
+    private boolean receiveLocation(boolean forceUpdate) {
+        Location location = locationManager.getLastKnownLocation(locationProvider);
+        if (location != null) {
+            if (forceUpdate || isTooOld(location.getTime())) {
+                locationManager.requestSingleUpdate(locationProvider, locationListener, null);
+                return false;
+            } else {
+                currentLocation = location;
+                return true;
+            }
+
+        } else {
+            Timber.tag(TAG).e("LastKnownLocation is null.");
+            locationManager.requestSingleUpdate(locationProvider, locationListener, null);
+            return false;
         }
     }
 
@@ -185,7 +230,7 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
 
         @Override
         public void onLocationChanged(Location location) {
-            currnetLocation = location;
+            currentLocation = location;
             requestWeather();
         }
     };
@@ -239,27 +284,30 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
     @Subscribe(sticky = true)
     public void onPermissionEvent(PermissionEvent permissionEvent) {
         if (permissionEvent.grantResult == PackageManager.PERMISSION_GRANTED) {
-            receiveLocation();
-            requestWeather();
+            refreshWeather(false);
         }
     }
 
     private void requestWeather() {
-        if (currnetLocation != null) {
-            presenter.requestWeather(currnetLocation.getLatitude(), currnetLocation.getLongitude());
-            showRegion(currnetLocation.getLatitude(), currnetLocation.getLongitude());
+        if (currentLocation != null) {
+            presenter.requestWeather(currentLocation.getLatitude(), currentLocation.getLongitude());
+            showRegion(currentLocation.getLatitude(), currentLocation.getLongitude());
         }
     }
 
     @Subscribe
     public void onWeatherApiChange(WeatherApiChangeEvent event) {
         presenter.changeWeatherApi(event.type);
-        receiveLocation();
-        requestWeather();
+        refreshWeather(false);
     }
 
     @Override
     public void showWeather(Weather weather) {
+
+        if (constraintLayout.getVisibility() != View.VISIBLE) {
+            constraintLayout.setVisibility(View.VISIBLE);
+        }
+
         int temperature = Math.round(weather.getTemperature());
         temperatureView.setText(String.valueOf(temperature) + "°");
         descriptionView.setText(weather.getDescription());
@@ -273,6 +321,11 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
     @Override
     public void showErrorMessage(String message) {
         Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void setRefreshing(boolean enable) {
+        refreshLayout.setRefreshing(enable);
     }
 
     @Override
