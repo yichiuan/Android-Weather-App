@@ -187,6 +187,9 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
     }
 
     private void showRegion(double latitude, double longitude) {
+
+        StringBuilder region = new StringBuilder();
+
         if (Geocoder.isPresent()) {
             Geocoder geocoder = new Geocoder(getContext());
 
@@ -196,24 +199,33 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             if (addresses != null && addresses.size() > 0) {
                 Address address = addresses.get(0);
 
-                String locality = address.getLocality();
-                if (locality == null) locality = "";
+                String adminArea = address.getAdminArea();
+                if (adminArea == null) adminArea = address.getSubAdminArea();
 
-                ((AppCompatActivity) getActivity()).getSupportActionBar()
-                        .setTitle(address.getAdminArea() + locality);
+                String locality = address.getLocality();
+                if (locality == null) locality = address.getSubLocality();
+
+                if (adminArea == null && locality == null) {
+                    region.append(address.getCountryName());
+                } else {
+                    if (adminArea != null) region.append(adminArea);
+                    if (locality != null) region.append(locality);
+                }
+
             } else {
                 Timber.e("No address be found.");
             }
         }
         else {
-            ((AppCompatActivity) getActivity()).getSupportActionBar()
-                    .setTitle("");
             Timber.e("No Geocoder");
         }
 
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setTitle(region.toString());
     }
 
     @Subscribe(sticky = true)
