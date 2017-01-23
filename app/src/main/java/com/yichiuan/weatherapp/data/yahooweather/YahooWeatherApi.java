@@ -13,7 +13,7 @@ import com.yichiuan.weatherapp.data.yahooweather.model.Wind;
 import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherCode;
-import com.yichiuan.weatherapp.util.TemperatureUtil;
+import com.yichiuan.weatherapp.util.UnitUtil;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -56,12 +56,17 @@ public class YahooWeatherApi implements WeatherApi {
         Units units = channel.units();
 
         float temperature = units.temperature() == 'F' ?
-                TemperatureUtil.convertToCelsiusFromFahrenheit(condition.temp()) : condition.temp();
+                UnitUtil.convertToCelsiusFromFahrenheit(condition.temp()) : condition.temp();
 
         Atmosphere atmosphere = channel.atmosphere();
         Wind yahooWind = channel.wind();
+
+        float windSpeed = units.speed().equals("mph") ?
+                UnitUtil.convertToMSFromMPH(yahooWind.speed()) :
+                UnitUtil.convertToMSFromKPH(yahooWind.speed());
+
         com.yichiuan.weatherapp.entity.Wind wind =
-                new com.yichiuan.weatherapp.entity.Wind(yahooWind.speed(),
+                new com.yichiuan.weatherapp.entity.Wind(windSpeed,
                                                        yahooWind.direction());
 
         return new Weather(getWeatherCodeFromYahoo(condition.code()),

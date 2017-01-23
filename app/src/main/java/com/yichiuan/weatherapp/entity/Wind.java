@@ -1,7 +1,7 @@
 package com.yichiuan.weatherapp.entity;
 
 public class Wind {
-    private float speed; // mph
+    private float speed; // m/s
     private float direction;
 
     public Wind(float speed, float direction) {

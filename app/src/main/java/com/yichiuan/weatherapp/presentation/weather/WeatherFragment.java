@@ -55,14 +55,23 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
 
     private Location currnetLocation;
 
-    @BindView(R.id.temperature_view)
+    @BindView(R.id.textview_weather_temperature)
     TextView temperatureView;
+
     @BindView(R.id.constraint_layout)
     ConstraintLayout constraintLayout;
-    @BindView(R.id.description_view)
+
+    @BindView(R.id.textview_weather_description)
     TextView descriptionView;
-    @BindView(R.id.weathericon_view)
+
+    @BindView(R.id.textview_weather_weathericon)
     TextView weatherIconView;
+
+    @BindView(R.id.textview_weather_humidity)
+    TextView humidityTextview;
+
+    @BindView(R.id.textview_weather_wind)
+    TextView windTextview;
 
     public static WeatherFragment newInstance() {
         return new WeatherFragment();
@@ -125,7 +134,7 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
                     (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
             Criteria criteria = new Criteria();
-            criteria.setPowerRequirement(Criteria. POWER_LOW);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
 
             String bestProvider = locationManager.getBestProvider(criteria, true);
             if (bestProvider == null || bestProvider.equals(LocationManager.PASSIVE_PROVIDER)) {
@@ -219,8 +228,7 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
             } else {
                 Timber.e("No address be found.");
             }
-        }
-        else {
+        } else {
             Timber.e("No Geocoder");
         }
 
@@ -256,6 +264,10 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
         temperatureView.setText(String.valueOf(temperature) + "°");
         descriptionView.setText(weather.getDescription());
         weatherIconView.setText(WeatherHelper.getWeatherIconWith(weather.getWeatherCode()));
+
+        humidityTextview.setText(String.valueOf(weather.getHumidity()) + "%");
+
+        windTextview.setText(String.format("%.1f", weather.getWind().getSpeed()) + " m/s");
     }
 
     @Override
