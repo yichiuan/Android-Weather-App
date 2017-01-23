@@ -22,7 +22,7 @@ public abstract class Main {
     public abstract byte humidity();
 
     @SerializedName("pressure")
-    public abstract short pressure();
+    public abstract float pressure();
 
     public static TypeAdapter<Main> typeAdapter(Gson gson) {
         return new AutoValue_Main.GsonTypeAdapter(gson);

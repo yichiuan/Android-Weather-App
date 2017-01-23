@@ -1,5 +1,7 @@
 package com.yichiuan.weatherapp.data.openweathermap.model;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -27,6 +29,12 @@ public abstract class Response {
     public abstract Main main();
 
     public abstract Clouds clouds();
+
+    @Nullable
+    public abstract Rain rain();
+
+    @Nullable
+    public abstract Snow snow();
 
     @SerializedName("id")
     public abstract int cityId();
