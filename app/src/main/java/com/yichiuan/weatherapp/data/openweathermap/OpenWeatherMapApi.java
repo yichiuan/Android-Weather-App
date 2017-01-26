@@ -5,12 +5,17 @@ import android.support.annotation.VisibleForTesting;
 
 import com.yichiuan.weatherapp.BuildConfig;
 import com.yichiuan.weatherapp.data.WeatherApi;
+import com.yichiuan.weatherapp.data.openweathermap.model.Forecast;
+import com.yichiuan.weatherapp.data.openweathermap.model.ForecastResponse;
 import com.yichiuan.weatherapp.data.openweathermap.model.Main;
 import com.yichiuan.weatherapp.data.openweathermap.model.Response;
 import com.yichiuan.weatherapp.data.openweathermap.model.WeatherItem;
 import com.yichiuan.weatherapp.data.openweathermap.model.Wind;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -28,8 +33,34 @@ public class OpenWeatherMapApi implements WeatherApi {
 
     @Override
     public Observable<Weather> getWeather(double latitude, double longitude) {
-        return openWeatherMapService.getWeather(latitude, longitude, key)
+
+        Observable<Weather> weatherObservable = openWeatherMapService.getWeather(latitude, longitude, key)
                 .map(this::processWeather);
+
+        Observable<ForecastResponse> forecastObservable =
+                openWeatherMapService.getForecasts(latitude, longitude, key);
+
+        Observable<Weather> allWeatherObservable = Observable.zip(weatherObservable, forecastObservable,
+                (weather, forecastResponse) -> {
+                    List<com.yichiuan.weatherapp.entity.Forecast> forecasts = new ArrayList<>();
+                    for (Forecast forecast : forecastResponse.forecasts()) {
+
+                        WeatherItem weatherItem = forecast.weathers().get(0);
+
+                        com.yichiuan.weatherapp.entity.Forecast forecastEntity =
+                                new com.yichiuan.weatherapp.entity.Forecast(
+                                        getWeatherCodeFromConditionCode(weatherItem.conditionCode()),
+                                        forecast.datatimeText(),
+                                        forecast.main().tempMax(),
+                                        forecast.main().tempMin(),
+                                        weatherItem.description());
+                        forecasts.add(forecastEntity);
+                    }
+                    weather.setForecasts(forecasts);
+                    return weather;
+                });
+
+        return allWeatherObservable;
     }
 
     @VisibleForTesting
@@ -46,7 +77,11 @@ public class OpenWeatherMapApi implements WeatherApi {
                            main.temp(),
                            weatherItem.description(),
                            main.humidity(),
-                           wind);
+                           wind, null);
+    }
+
+    public Observable<ForecastResponse> getForecasts(double latitude, double longitude) {
+        return openWeatherMapService.getForecasts(latitude, longitude, key);
     }
 
     private WeatherCode getWeatherCodeFromConditionCode(int conditionCode) {

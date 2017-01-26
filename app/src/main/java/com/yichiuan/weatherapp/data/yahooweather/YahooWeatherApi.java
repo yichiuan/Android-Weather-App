@@ -8,12 +8,16 @@ import com.yichiuan.weatherapp.data.WeatherException;
 import com.yichiuan.weatherapp.data.yahooweather.model.Atmosphere;
 import com.yichiuan.weatherapp.data.yahooweather.model.Channel;
 import com.yichiuan.weatherapp.data.yahooweather.model.Condition;
+import com.yichiuan.weatherapp.data.yahooweather.model.Forecast;
 import com.yichiuan.weatherapp.data.yahooweather.model.Units;
 import com.yichiuan.weatherapp.data.yahooweather.model.Wind;
 import com.yichiuan.weatherapp.data.yahooweather.model.YahooWeatherResponse;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherCode;
 import com.yichiuan.weatherapp.util.UnitUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -69,11 +73,26 @@ public class YahooWeatherApi implements WeatherApi {
                 new com.yichiuan.weatherapp.entity.Wind(windSpeed,
                                                        yahooWind.direction());
 
+        List<com.yichiuan.weatherapp.entity.Forecast> forecasts = new ArrayList<>();
+
+        for (Forecast forecast : channel.item().forecast()) {
+
+            com.yichiuan.weatherapp.entity.Forecast forecastEntity =
+                    new com.yichiuan.weatherapp.entity.Forecast(
+                            getWeatherCodeFromYahoo((short)forecast.code()),
+                            forecast.date(),
+                            forecast.high(),
+                            forecast.low(),
+                            forecast.text());
+            forecasts.add(forecastEntity);
+        }
+
         return new Weather(getWeatherCodeFromYahoo(condition.code()),
                                       temperature,
                                       condition.text(),
                                       atmosphere.humidity(),
-                                      wind);
+                                      wind,
+                                      forecasts);
     }
 
     private WeatherCode getWeatherCodeFromYahoo(short code) {

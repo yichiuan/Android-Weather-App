@@ -18,6 +18,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -80,6 +83,9 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
     @BindView(R.id.textview_weather_wind)
     TextView windTextview;
 
+    @BindView(R.id.recyclerview_forecast)
+    RecyclerView forecastRecyclerview;
+
     public static WeatherFragment newInstance() {
         return new WeatherFragment();
     }
@@ -104,6 +110,11 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
                 refreshWeather(true);
             }
         });
+
+        forecastRecyclerview.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        forecastRecyclerview.setAdapter(new ForecastAdapter(getContext(), null));
+        forecastRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
 
         weatherIconView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/weathericons.ttf"));
 
@@ -170,7 +181,7 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
             Criteria criteria = new Criteria();
             criteria.setPowerRequirement(Criteria.POWER_LOW);
 
-            locationProvider= locationManager.getBestProvider(criteria, true);
+            locationProvider = locationManager.getBestProvider(criteria, true);
             if (locationProvider == null || locationProvider.equals(LocationManager.PASSIVE_PROVIDER)) {
                 Snackbar.make(constraintLayout, "Please enable android location.", Snackbar.LENGTH_LONG)
                         .show();
@@ -316,6 +327,8 @@ public class WeatherFragment extends Fragment implements WeatherContract.View {
         humidityTextview.setText(String.valueOf(weather.getHumidity()) + "%");
 
         windTextview.setText(String.format("%.1f", weather.getWind().getSpeed()) + " m/s");
+
+        forecastRecyclerview.setAdapter(new ForecastAdapter(getContext(), weather.getForecasts()));
     }
 
     @Override

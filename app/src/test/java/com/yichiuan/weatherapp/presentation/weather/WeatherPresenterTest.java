@@ -68,6 +68,6 @@ public class WeatherPresenterTest {
     }
 
     private Weather getDummyWeather() {
-        return new Weather(WeatherCode.SUNNY, 20, "Sunny", (byte)55, new Wind(10, 10));
+        return new Weather(WeatherCode.SUNNY, 20, "Sunny", (byte)55, new Wind(10, 10), null);
     }
 }

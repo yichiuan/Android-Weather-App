@@ -1,6 +1,8 @@
 package com.yichiuan.weatherapp.entity;
 
 
+import java.util.List;
+
 public class Weather {
     private WeatherCode weatherCode;
     private float temperature; // °C
@@ -8,12 +10,15 @@ public class Weather {
     private byte humidity;
     private Wind wind;
 
-    public Weather(WeatherCode weatherCode, float temperature, String description, byte humidity, Wind wind) {
+    private List<Forecast> forecasts;
+
+    public Weather(WeatherCode weatherCode, float temperature, String description, byte humidity, Wind wind, List<Forecast> forecasts) {
         this.weatherCode = weatherCode;
         this.temperature = temperature;
         this.description = description;
         this.humidity = humidity;
         this.wind = wind;
+        this.forecasts = forecasts;
     }
 
     public WeatherCode getWeatherCode() {
@@ -54,5 +59,13 @@ public class Weather {
 
     public void setWind(Wind wind) {
         this.wind = wind;
+    }
+
+    public List<Forecast> getForecasts() {
+        return forecasts;
+    }
+
+    public void setForecasts(List<Forecast> forecasts) {
+        this.forecasts = forecasts;
     }
 }
