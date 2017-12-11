@@ -17,8 +17,8 @@ import com.yichiuan.weatherapp.entity.WeatherCode;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Single;
 import retrofit2.Retrofit;
-import rx.Observable;
 
 
 public class OpenWeatherMapApi implements WeatherApi {
@@ -32,15 +32,15 @@ public class OpenWeatherMapApi implements WeatherApi {
     }
 
     @Override
-    public Observable<Weather> getWeather(double latitude, double longitude) {
+    public Single<Weather> getWeather(double latitude, double longitude) {
 
-        Observable<Weather> weatherObservable = openWeatherMapService.getWeather(latitude, longitude, key)
+        Single<Weather> weatherObservable = openWeatherMapService.getWeather(latitude, longitude, key)
                 .map(this::processWeather);
 
-        Observable<ForecastResponse> forecastObservable =
+        Single<ForecastResponse> forecastObservable =
                 openWeatherMapService.getForecasts(latitude, longitude, key);
 
-        Observable<Weather> allWeatherObservable = Observable.zip(weatherObservable, forecastObservable,
+        Single<Weather> allWeatherObservable = Single.zip(weatherObservable, forecastObservable,
                 (weather, forecastResponse) -> {
                     List<com.yichiuan.weatherapp.entity.Forecast> forecasts = new ArrayList<>();
                     for (Forecast forecast : forecastResponse.forecasts()) {
@@ -80,7 +80,7 @@ public class OpenWeatherMapApi implements WeatherApi {
                            wind, null);
     }
 
-    public Observable<ForecastResponse> getForecasts(double latitude, double longitude) {
+    public Single<ForecastResponse> getForecasts(double latitude, double longitude) {
         return openWeatherMapService.getForecasts(latitude, longitude, key);
     }
 

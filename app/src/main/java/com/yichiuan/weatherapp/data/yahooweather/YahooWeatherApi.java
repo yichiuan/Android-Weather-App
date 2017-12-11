@@ -19,8 +19,8 @@ import com.yichiuan.weatherapp.util.UnitUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Single;
 import retrofit2.Retrofit;
-import rx.Observable;
 
 
 public class YahooWeatherApi implements WeatherApi {
@@ -41,7 +41,7 @@ public class YahooWeatherApi implements WeatherApi {
     }
 
     @Override
-    public Observable<Weather> getWeather(double latitude, double longitude) {
+    public Single<Weather> getWeather(double latitude, double longitude) {
         String yql = String.format(YQL_TEMPLATE, latitude, longitude);
 
         return yahooWeatherService.getWeather(yql)

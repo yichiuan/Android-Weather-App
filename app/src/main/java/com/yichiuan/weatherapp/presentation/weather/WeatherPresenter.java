@@ -1,12 +1,10 @@
 package com.yichiuan.weatherapp.presentation.weather;
 
 import com.yichiuan.weatherapp.data.WeatherRepository;
-import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherApiSourceType;
 import com.yichiuan.weatherapp.presentation.base.BasePresenter;
 
-import rx.Observer;
-import rx.Scheduler;
+import io.reactivex.Scheduler;
 import timber.log.Timber;
 
 public class WeatherPresenter extends BasePresenter implements WeatherContract.Presenter {
@@ -32,30 +30,21 @@ public class WeatherPresenter extends BasePresenter implements WeatherContract.P
     @Override
     public void requestWeather(double latitude, double longitude) {
 
-        addSubscription(weatherRepository.getWeather(latitude, longitude)
+        addDisposable(weatherRepository.getWeather(latitude, longitude)
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
-                .subscribe(new Observer<Weather>() {
-                    @Override
-                    public void onCompleted() {
-                        Timber.i("requestWeather onCompleted");
-                        weatherView.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                        weatherView.showErrorMessage(e.getMessage());
-                        weatherView.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onNext(Weather weather) {
-                        Timber.i("requestWeather onNext");
-                        weatherView.showWeather(weather);
-                        weatherView.setRefreshing(false);
-                    }
-                }));
+                .subscribe(
+                        weather -> {
+                            Timber.i("requestWeather onSuccess");
+                            weatherView.showWeather(weather);
+                            weatherView.setRefreshing(false);
+                        },
+                        throwable -> {
+                            Timber.e(throwable);
+                            weatherView.showErrorMessage(throwable.getMessage());
+                            weatherView.setRefreshing(false);
+                        }
+                ));
     }
 
     @Override

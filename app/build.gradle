@@ -130,15 +130,15 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${libraries.retrofit}"
-    implementation "com.squareup.retrofit2:adapter-rxjava:${libraries.retrofit}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:${libraries.retrofit}"
     implementation "com.squareup.okhttp3:okhttp:${libraries.okhttp3}"
     implementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp3}"
 
     // RxJava
-    implementation "io.reactivex:rxandroid:${libraries.rxandroid}"
-    implementation "io.reactivex:rxjava:${libraries.rxjava}"
+    implementation "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
+    implementation "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
 
-    implementation "com.tbruyelle.rxpermissions:rxpermissions:${libraries.rxpermissions}"
+    implementation "com.tbruyelle.rxpermissions2:rxpermissions:${libraries.rxpermissions}"
 
     // LeakCanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${libraries.leakcanary}"

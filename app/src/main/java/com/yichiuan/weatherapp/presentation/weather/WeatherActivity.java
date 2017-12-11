@@ -8,15 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.tbruyelle.rxpermissions.RxPermissions;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.yichiuan.weatherapp.Injection;
 import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.event.PermissionEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class WeatherActivity extends AppCompatActivity {
@@ -31,20 +31,20 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                                                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         setContentView(R.layout.activity_weather);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         WeatherFragment fragment =
-                (WeatherFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                (WeatherFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (fragment == null) {
             fragment = WeatherFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
-                                       .replace(R.id.content_frame, fragment)
-                                       .commit();
+                    .replace(R.id.content_frame, fragment)
+                    .commit();
         }
 
         // Create the presenter
@@ -68,8 +68,7 @@ public class WeatherActivity extends AppCompatActivity {
                         } else if (permission.shouldShowRequestPermissionRationale) {
                             Snackbar.make(findViewById(R.id.root_layout), R.string.open_location,
                                     Snackbar.LENGTH_LONG).show();
-                        }
-                        else {
+                        } else {
                             Snackbar.make(findViewById(R.id.root_layout), "permission denied",
                                     Snackbar.LENGTH_LONG).show();
                         }

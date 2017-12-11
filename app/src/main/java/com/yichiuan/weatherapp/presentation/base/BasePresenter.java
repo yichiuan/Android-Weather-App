@@ -1,11 +1,11 @@
 package com.yichiuan.weatherapp.presentation.base;
 
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class BasePresenter implements MvpPresenter {
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     public void start() {
@@ -14,10 +14,10 @@ public class BasePresenter implements MvpPresenter {
 
     @Override
     public void stop() {
-        compositeSubscription.clear();
+        compositeDisposable.clear();
     }
 
-    protected void addSubscription(Subscription subscription) {
-        this.compositeSubscription.add(subscription);
+    protected void addDisposable(Disposable disposable) {
+        this.compositeDisposable.add(disposable);
     }
 }

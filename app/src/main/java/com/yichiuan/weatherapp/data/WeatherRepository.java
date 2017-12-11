@@ -9,7 +9,7 @@ import com.yichiuan.weatherapp.data.yahooweather.YahooWeatherApi;
 import com.yichiuan.weatherapp.entity.Weather;
 import com.yichiuan.weatherapp.entity.WeatherApiSourceType;
 
-import rx.Observable;
+import io.reactivex.Single;
 
 
 public class WeatherRepository {
@@ -41,7 +41,7 @@ public class WeatherRepository {
         this.weatherApi = weatherApi;
     }
 
-    public Observable<Weather> getWeather(double latitude, double longitude) {
+    public Single<Weather> getWeather(double latitude, double longitude) {
         return weatherApi.getWeather(latitude, longitude);
     }
 
