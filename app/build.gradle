@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.3"
 
     defaultConfig {
         applicationId "com.yichiuan.weatherapp"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -52,13 +51,15 @@ android {
         }
     }
 
+    flavorDimensions "default"
     // If you need to add more flavors, consider using flavor dimensions.
     productFlavors {
         mock {
+            dimension "default"
             applicationIdSuffix = ".mock"
         }
         prod {
-
+            dimension "default"
         }
     }
 
@@ -106,67 +107,62 @@ dexcount {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile "com.android.support:appcompat-v7:${libraries.supportVersion}"
-    compile "com.android.support:design:${libraries.supportVersion}"
-    compile "com.android.support.constraint:constraint-layout:${libraries.constraint_layout}"
+    implementation "com.android.support:appcompat-v7:${libraries.supportVersion}"
+    implementation "com.android.support:design:${libraries.supportVersion}"
+    implementation "com.android.support.constraint:constraint-layout:${libraries.constraint_layout}"
 
-    compile "com.jakewharton.timber:timber:${libraries.timber}"
+    implementation "com.jakewharton.timber:timber:${libraries.timber}"
 
-    compile "com.google.code.gson:gson:${libraries.gson}"
+    implementation "com.google.code.gson:gson:${libraries.gson}"
     annotationProcessor "com.ryanharter.auto.value:auto-value-gson:${libraries.auto_value_gson}"
-    provided "com.ryanharter.auto.value:auto-value-gson:${libraries.auto_value_gson}"
+    compileOnly "com.ryanharter.auto.value:auto-value-gson:${libraries.auto_value_gson}"
 
     // EventBus
-    compile "org.greenrobot:eventbus:${libraries.eventbus}"
+    implementation "org.greenrobot:eventbus:${libraries.eventbus}"
     annotationProcessor "org.greenrobot:eventbus-annotation-processor:${libraries.eventbus_annotation_processor}"
 
     // ButterKnife
-    compile "com.jakewharton:butterknife:${libraries.butterknife}"
+    implementation "com.jakewharton:butterknife:${libraries.butterknife}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${libraries.butterknife}"
 
     // Retrofit
-    compile "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
-    compile "com.squareup.retrofit2:converter-gson:${libraries.retrofit}"
-    compile "com.squareup.retrofit2:adapter-rxjava:${libraries.retrofit}"
-    compile "com.squareup.okhttp3:okhttp:${libraries.okhttp3}"
-    compile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp3}"
+    implementation "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
+    implementation "com.squareup.retrofit2:converter-gson:${libraries.retrofit}"
+    implementation "com.squareup.retrofit2:adapter-rxjava:${libraries.retrofit}"
+    implementation "com.squareup.okhttp3:okhttp:${libraries.okhttp3}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp3}"
 
     // RxJava
-    compile "io.reactivex:rxandroid:${libraries.rxandroid}"
-    compile "io.reactivex:rxjava:${libraries.rxjava}"
+    implementation "io.reactivex:rxandroid:${libraries.rxandroid}"
+    implementation "io.reactivex:rxjava:${libraries.rxjava}"
 
-    compile "com.tbruyelle.rxpermissions:rxpermissions:${libraries.rxpermissions}"
+    implementation "com.tbruyelle.rxpermissions:rxpermissions:${libraries.rxpermissions}"
 
     // LeakCanary
-    debugCompile "com.squareup.leakcanary:leakcanary-android:${libraries.leakcanary}"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
-    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${libraries.leakcanary}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${libraries.leakcanary}"
 
     // Stetho
-    debugCompile "com.facebook.stetho:stetho:${libraries.stetho}"
-    debugCompile "com.facebook.stetho:stetho-okhttp3:${libraries.stetho}"
+    debugImplementation "com.facebook.stetho:stetho:${libraries.stetho}"
+    debugImplementation "com.facebook.stetho:stetho-okhttp3:${libraries.stetho}"
 
     // Dependencies for local unit tests
-    testCompile "junit:junit:${libraries.junit}"
-    testCompile "org.mockito:mockito-core:${libraries.mockito}"
-    testCompile "org.hamcrest:hamcrest-all:${libraries.hamcrest}"
-    testCompile "org.assertj:assertj-core:${libraries.assertj}"
+    testImplementation "junit:junit:${libraries.junit}"
+    testImplementation "org.mockito:mockito-core:${libraries.mockito}"
+    testImplementation "org.hamcrest:hamcrest-all:${libraries.hamcrest}"
+    testImplementation "org.assertj:assertj-core:${libraries.assertj}"
+    androidTestImplementation "org.mockito:mockito-android:${libraries.mockito}"
 
     // Android Testing Support Library
-    androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
-    androidTestCompile "com.android.support.test:rules:${libraries.testrunner}"
-    androidTestCompile "com.android.support.test.espresso:espresso-core:${libraries.espresso}"
-    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:${libraries.espresso}") {
-        exclude module: 'recyclerview-v7'
-        exclude module: 'design'
-        exclude module: 'support-v4'
-    }
-    androidTestCompile "com.android.support.test.espresso:espresso-idling-resource:${libraries.espresso}"
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:${libraries.espresso}"
-
-    androidTestCompile "com.github.blueapron:dexmaker:${libraries.blueapron_dexmaker}"
+    androidTestImplementation "com.android.support.test:runner:${libraries.testrunner}"
+    androidTestImplementation "com.android.support.test:rules:${libraries.testrunner}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:${libraries.espresso}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:${libraries.espresso}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-idling-resource:${libraries.espresso}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-intents:${libraries.espresso}"
 }
 
 /*

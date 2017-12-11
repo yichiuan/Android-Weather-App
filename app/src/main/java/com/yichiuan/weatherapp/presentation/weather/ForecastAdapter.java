@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.yichiuan.weatherapp.R;
 import com.yichiuan.weatherapp.WeatherHelper;
 import com.yichiuan.weatherapp.entity.Forecast;
-import com.yichiuan.weatherapp.presentation.view.CustomFontTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.textview_forecast_weathericon)
-        CustomFontTextView weatherIcon;
+        TextView weatherIcon;
 
         @BindView(R.id.textview_forecast_temp)
         TextView temperatureTextView;

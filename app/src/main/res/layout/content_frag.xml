@@ -43,12 +43,12 @@
             app:layout_constraintBottom_toTopOf="@+id/textview_weather_weathericon"
             app:layout_constraintVertical_bias="0.73" />
 
-        <com.yichiuan.weatherapp.presentation.view.CustomFontTextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textview_weather_weathericon"
             android:textSize="120sp"
-            app:font="fonts/weathericons.ttf"
+            android:fontFamily="@font/weathericons"
             android:textColor="@android:color/white"
             tools:text="@string/wi_rain"
             app:layout_constraintRight_toRightOf="parent"
@@ -57,12 +57,12 @@
             app:layout_constraintBottom_toTopOf="@+id/recyclerview_forecast"
             app:layout_constraintVertical_bias="0.25" />
 
-        <com.yichiuan.weatherapp.presentation.view.CustomFontTextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textview_weather_humidity_icon"
             android:textSize="20sp"
-            app:font="fonts/weathericons.ttf"
+            android:fontFamily="@font/weathericons"
             android:textColor="@android:color/white"
             android:text="@string/wi_raindrop"
             app:layout_constraintRight_toRightOf="parent"
@@ -85,12 +85,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp" />
 
-        <com.yichiuan.weatherapp.presentation.view.CustomFontTextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textview_weather_wind_icon"
             android:textSize="20sp"
-            app:font="fonts/weathericons.ttf"
+            android:fontFamily="@font/weathericons"
             android:textColor="@android:color/white"
             android:text="@string/wi_strong_wind"
             app:layout_constraintTop_toBottomOf="@+id/textview_weather_temperature"

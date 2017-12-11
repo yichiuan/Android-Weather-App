@@ -18,12 +18,12 @@
         android:text="WED"
         android:textColor="@color/colorPrimaryDark" />
 
-    <com.yichiuan.weatherapp.presentation.view.CustomFontTextView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textview_forecast_weathericon"
         android:textSize="30sp"
-        app:font="fonts/weathericons.ttf"
+        android:fontFamily="@font/weathericons"
         tools:text="@string/wi_rain"
         android:textAlignment="center"
         android:textColor="@android:color/white"
